@@ -8,19 +8,23 @@ class IconTextField extends StatefulWidget {
     required this.controller,
     required this.whiteBackground,
     this.icon,
+    this.suffixIcon,
     this.label,
     this.textColor = Colors.white,
     this.textInputType = TextInputType.text,
     this.isPassword = false,
     this.isMultiLine = false,
+    this.isEnabled = true,
   }) : super(key: key);
 
   final String? icon;
+  final String? suffixIcon;
   final String hint;
   final String? label;
   final TextEditingController controller;
   final bool isPassword;
   final bool isMultiLine;
+  final bool isEnabled;
   final Color textColor;
   final TextInputType textInputType;
   final bool whiteBackground;
@@ -39,7 +43,7 @@ class _IconTextFieldState extends State<IconTextField> {
       children: [
         if (widget.label != null)
           Text(widget.label!, style: TextStyle(color: widget.textColor)),
-        const SizedBox(height: 5,),
+        const SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -82,6 +86,7 @@ class _IconTextFieldState extends State<IconTextField> {
                 child:
                     widget.isMultiLine
                         ? TextFormField(
+                          enabled: widget.isEnabled,
                           cursorColor:
                               widget.whiteBackground
                                   ? Color(0x61000000)
@@ -115,6 +120,7 @@ class _IconTextFieldState extends State<IconTextField> {
                           ),
                         )
                         : TextFormField(
+                      enabled: widget.isEnabled,
                           cursorColor:
                               widget.whiteBackground
                                   ? Color(0x61000000)
@@ -147,6 +153,20 @@ class _IconTextFieldState extends State<IconTextField> {
                           ),
                         ),
               ),
+              if (widget.suffixIcon != null)
+                Container(
+                  width: 45,
+                  padding: EdgeInsets.only(top: widget.isMultiLine ? 20 : 0),
+                  child: Image.asset(
+                    widget.suffixIcon!,
+                    height: 14,
+                    width: 14,
+                    color:
+                        widget.whiteBackground
+                            ? Color(0x61000000)
+                            : Colors.white,
+                  ),
+                ),
               Visibility(
                 visible: widget.isPassword,
                 child: InkWell(

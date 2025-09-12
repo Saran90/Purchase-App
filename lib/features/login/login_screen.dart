@@ -20,58 +20,73 @@ class LoginScreen extends StatelessWidget {
             colors: [appColorGradient1, appColorGradient2],
             begin: Alignment.topLeft,
             stops: [0.5, 1],
-            end: Alignment.bottomRight
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 40),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 30,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 40),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: IconTextField(
+                        hint: 'Enter username',
+                        icon: 'assets/icons/user.png',
+                        controller: _controller.userNameController,
+                        whiteBackground: false,
+                        textInputType: TextInputType.text,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: IconTextField(
+                        hint: 'Enter password',
+                        icon: 'assets/icons/password.png',
+                        controller: _controller.passwordController,
+                        whiteBackground: false,
+                        isPassword: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: AppButton(
+                        label: 'Login',
+                        onSubmit: _controller.onLoginClicked,
+                        startColor: appColorGradient1,
+                        endColor: appColorGradient2,
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 40),
-                  child: IconTextField(
-                    hint: 'Enter username',
-                    icon: 'assets/icons/user.png',
-                    controller: _controller.userNameController,
-                    whiteBackground: false,
-                    textInputType: TextInputType.text,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: IconTextField(
-                    hint: 'Enter password',
-                    icon: 'assets/icons/password.png',
-                    controller: _controller.passwordController,
-                    whiteBackground: false,
-                    isPassword: true,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: AppButton(
-                    label: 'Login',
-                    onSubmit: _controller.onLoginClicked,
-                    startColor: appColorGradient1,
-                    endColor: appColorGradient2,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              Obx(
+                () =>
+                    _controller.isLoading.value
+                        ? const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
+                        : const SizedBox(),
+              ),
+            ],
           ),
         ),
       ),

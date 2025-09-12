@@ -1,0 +1,7 @@
+const String apiBaseUrl = 'https://purchase.trademate.co.in';
+const String loginUrl = '/api/auth/login';
+const String addPurchaseUrl = '/api/purchase/save';
+const String deletePurchaseUrl = '/api/purchase/Delete';
+const String getPurchaseByIdUrl = '/api/purchase/GetById';
+const String getPurchasesUrl = '/api/purchase';
+const String productsUrl = '/api/products';

@@ -41,6 +41,11 @@ dependencies:
   intl: ^0.18.1
   simple_barcode_scanner: ^0.3.0
   dropdown_button2: ^2.3.9
+  get_storage: ^2.1.1
+  equatable: ^2.0.5
+  dartz: ^0.10.1
+  dio: ^5.1.1
+  toastification: ^2.3.0
 
 dev_dependencies:
   flutter_test:

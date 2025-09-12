@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:purchase_app/main.dart';
 import 'package:purchase_app/utils/colors.dart';
 
 import '../../utils/routes.dart';
@@ -17,7 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 3), () {
-      Get.offAndToNamed(loginRoute);
+      // if((appStorage.getAccessToken()?.isNotEmpty)??false) {
+      //   Get.offAndToNamed(addPurchaseBillRoute);
+      // } else {
+        Get.offAndToNamed(loginRoute);
+      // }
     });
     super.initState();
   }

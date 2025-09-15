@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:purchase_app/utils/routes.dart';
 
 import '../main.dart';
 
@@ -33,6 +34,9 @@ class ApiClient extends GetConnect implements GetxService {
         // throw Exception('API Error: ${response.statusCode}');
       } else {
         print('Success: ${response.statusCode} - ${response.bodyString}');
+      }
+      if(isAuthenticated && response.statusCode == 401) {
+        Get.offAllNamed(loginRoute);
       }
       return response;
     });

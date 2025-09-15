@@ -3,5 +3,7 @@ const String loginUrl = '/api/auth/login';
 const String addPurchaseUrl = '/api/purchase/save';
 const String deletePurchaseUrl = '/api/purchase/Delete';
 const String getPurchaseByIdUrl = '/api/purchase/GetById';
+const String getProductByCodeUrl = '/api/products/GetByBarCode';
 const String getPurchasesUrl = '/api/purchase';
 const String productsUrl = '/api/products';
+const String suppliersUrl = '/api/suppliers';

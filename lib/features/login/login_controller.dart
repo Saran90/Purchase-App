@@ -44,10 +44,10 @@ class LoginController extends GetxController {
         (r) async {
           if (r?.token != null) {
             await appStorage.setToken(
-              accessToken: accessTokenKey,
-              refreshToken: r!.token!,
+              accessToken: r!.token!,
+              refreshToken: ''
             );
-            Get.offAndToNamed(addPurchaseBillRoute);
+            Get.offAndToNamed(purchaseBillsRoute);
           } else {
             showToast(message: loginFailedMessage);
           }

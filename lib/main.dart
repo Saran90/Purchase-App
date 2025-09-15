@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:purchase_app/api/purchase/purchase_api.dart';
 import 'package:purchase_app/utils/pages.dart';
 import 'package:toastification/toastification.dart';
 
@@ -16,6 +17,7 @@ Future<void> main() async {
 
 Future<void> initializeDependencies() async {
   Get.lazyPut<AuthApi>(() => AuthApi(baseUrl: apiBaseUrl),);
+  Get.lazyPut<PurchaseApi>(() => PurchaseApi(baseUrl: apiBaseUrl),);
 }
 
 AppStorage appStorage = AppStorage();

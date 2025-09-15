@@ -2,12 +2,17 @@ import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:purchase_app/api/purchase/purchase_api.dart';
 import 'package:purchase_app/features/purchase_bill/models/product_item.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
 import 'package:purchase_app/features/purchase_bill/models/supplier.dart';
 import 'package:purchase_app/utils/extensions.dart';
 import 'package:purchase_app/utils/utility_functions.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
+
+import '../../../api/error_response.dart';
+import '../../../data/error/failures.dart';
+import '../../../utils/messages.dart';
 
 class AddPurchaseItemController extends GetxController {
   final barcodeController = TextEditingController();
@@ -17,23 +22,39 @@ class AddPurchaseItemController extends GetxController {
   final totalItemsController = TextEditingController();
   final quantityController = TextEditingController();
   final freeQuantityController = TextEditingController();
+  final PurchaseApi purchaseApi = Get.find();
 
   Rx<ProductItem?> selectedProductItem = Rx<ProductItem?>(null);
-  RxList<ProductItem> productItems = RxList([
-    ProductItem(id: 1, name: 'Product 1'),
-    ProductItem(id: 2, name: 'Product 2'),
-    ProductItem(id: 3, name: 'Product 3'),
-  ]);
+  RxList<ProductItem> productItems = RxList([]);
+  RxBool isLoading = false.obs;
 
   Future<List<ProductItem>> getProductSuggestions(String pattern) async {
-    // In a real app, you might fetch suggestions from an API here
-    await Future.delayed(Duration(milliseconds: 200)); // Simulate network delay
     if (pattern.isEmpty || pattern.length < 4) {
       return [];
     }
-    return productItems.where((item) {
-      return item.name.toLowerCase().contains(pattern.toLowerCase());
-    }).toList();
+    var result = await purchaseApi.getProducts(name: pattern);
+    result.fold((l) {}, (r) {
+      if (r != null) {
+        productItems.value =
+            r.dataList
+                ?.map(
+                  (e) => ProductItem(
+                    id: e.productId?.toInt() ?? 0,
+                    name: e.productName ?? '',
+                    mrp: e.mrp?.toDouble() ?? 0,
+                    barCode: e.barCode ?? '',
+                    packing: e.packing ?? '',
+                  ),
+                )
+                .toList() ??
+            [];
+        return productItems;
+      } else {
+        productItems.value = [];
+        return [];
+      }
+    });
+    return productItems;
   }
 
   void onProductItemSelected(ProductItem item) {
@@ -53,25 +74,64 @@ class AddPurchaseItemController extends GetxController {
       delayMillis: 2000,
       cameraFace: CameraFace.front,
     );
-    barcodeController.text = res as String;
+    if (res != null) {
+      if (res == '-1') {
+        res = '';
+      }
+      barcodeController.text = res;
+      if(res.isNotEmpty) {
+        getProductByBarcode(res);
+      }
+    }
   }
 
   void onSaved() {
     Get.back(
       result: PurchaseItem(
-        id: getRandomId(),
+        id: selectedProductItem.value?.id ?? 0,
         name: nameController.text,
         packaging: packagingController.text,
         barcode: barcodeController.text,
         price: mrpController.text.toDouble() ?? 0,
         freeQuantity: freeQuantityController.text.toInt() ?? 0,
         quantity: quantityController.text.toInt() ?? 0,
-        count: totalItemsController.text.toInt() ?? 0,
       ),
     );
   }
 
   void onBackClicked() {
     Get.back();
+  }
+
+  Future<void> getProductByBarcode(String res) async {
+    isLoading.value = false;
+    var result = await purchaseApi.getProductByBarcode(res);
+    result.fold(
+      (l) {
+        if (l is APIFailure) {
+          ErrorResponse? errorResponse = l.error;
+          showToast(message: errorResponse?.message ?? apiFailureMessage);
+        } else if (l is ServerFailure) {
+          showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is NetworkFailure) {
+          showToast(message: networkFailureMessage);
+        } else {
+          showToast(message: unknownFailureMessage);
+        }
+        isLoading.value = false;
+      },
+      (r) {
+        if (r != null) {
+          selectedProductItem.value = ProductItem(
+            id: r.productId?.toInt() ?? 0,
+            name: r.productName ?? '',
+            mrp: r.mrp?.toDouble() ?? 0,
+            packing: r.packing ?? '',
+            barCode: r.barCode ?? '',
+          );
+        }
+        isLoading.value = false;
+      },
+    );
   }
 }

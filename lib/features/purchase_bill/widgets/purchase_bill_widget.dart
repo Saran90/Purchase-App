@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:purchase_app/features/purchase_bill/models/purchase_bill.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
+import 'package:purchase_app/utils/extensions.dart';
 
 class PurchaseItemWidget extends StatelessWidget {
-  const PurchaseItemWidget({super.key, required this.purchaseItem});
+  const PurchaseItemWidget({super.key, required this.purchaseBill});
 
-  final PurchaseItem purchaseItem;
+  final PurchaseBill purchaseBill;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class PurchaseItemWidget extends StatelessWidget {
             child: Row(
               children: [
                 Image.asset(
-                  'assets/icons/ic_product.png',
+                  'assets/icons/ic_bill.png',
                   height: 30,
                   width: 30,
                   color: Colors.white,
@@ -34,33 +36,21 @@ class PurchaseItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        purchaseItem.name,
+                        purchaseBill.invoiceNo ?? '',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
-                          overflow: TextOverflow.ellipsis
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            'Quantity: ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white60,
-                            ),
-                          ),
-                          Text(
-                            purchaseItem.quantity.toString(),
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white60,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        purchaseBill.supplierName ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white60,
+                        ),
                       ),
                     ],
                   ),
@@ -72,32 +62,20 @@ class PurchaseItemWidget extends StatelessWidget {
           Column(
             children: [
               Text(
-                '₹${purchaseItem.price}',
+                '₹${purchaseBill.billAmount}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
                 ),
               ),
-              Row(
-                children: [
-                  Text(
-                    'Free: ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white60,
-                    ),
-                  ),
-                  Text(
-                    purchaseItem.freeQuantity.toString(),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white60,
-                    ),
-                  ),
-                ],
+              Text(
+                purchaseBill.purchaseDate?.toDDMMYYYY() ?? '',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white60,
+                ),
               ),
             ],
           ),

@@ -6,7 +6,6 @@ class PurchaseItem {
   double price;
   int quantity;
   int freeQuantity;
-  int count;
 
   PurchaseItem({
     required this.id,
@@ -16,6 +15,5 @@ class PurchaseItem {
     required this.price,
     required this.freeQuantity,
     required this.quantity,
-    required this.count,
   });
 }

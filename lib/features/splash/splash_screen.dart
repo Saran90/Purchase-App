@@ -18,11 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 3), () {
-      // if((appStorage.getAccessToken()?.isNotEmpty)??false) {
-      //   Get.offAndToNamed(addPurchaseBillRoute);
-      // } else {
+      if ((appStorage.getAccessToken()?.isNotEmpty) ?? false) {
+        Get.offAndToNamed(purchaseBillsRoute);
+      } else {
         Get.offAndToNamed(loginRoute);
-      // }
+      }
     });
     super.initState();
   }
@@ -33,10 +33,10 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [appColorGradient1, appColorGradient2],
-              begin: Alignment.topLeft,
-              stops: [0.5, 1],
-              end: Alignment.bottomRight
+            colors: [appColorGradient1, appColorGradient2],
+            begin: Alignment.topLeft,
+            stops: [0.5, 1],
+            end: Alignment.bottomRight,
           ),
         ),
         child: Center(

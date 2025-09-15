@@ -50,75 +50,88 @@ class AddPurchaseBillScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: PopupMenuButton(
-                              color: Colors.white,
-                              surfaceTintColor: Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: EdgeInsets.zero,
-                              position: PopupMenuPosition.under,
-                              onSelected:
-                                  (value) =>
-                                      _controller.onMenuClicked(context, value),
-                              itemBuilder: (BuildContext bc) {
-                                return [
-                                  PopupMenuItem(
-                                    padding: EdgeInsets.zero,
-                                    value: 0,
-                                    child: Container(
-                                      height: 44,
-                                      padding: EdgeInsets.zero,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Colors.black38,
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Report',
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 1,
-                                    child: Container(
-                                      height: 44,
-                                      padding: EdgeInsets.zero,
-                                      child: Center(
-                                        child: Text(
-                                          'Reset Password',
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ];
-                              },
-                              icon: Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: const Icon(
-                                  Icons.settings,
-                                  size: 20,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () => _controller.onBackClicked(),
+                                child: Icon(
+                                  Icons.arrow_back_ios_new,
                                   color: Colors.white,
+                                  size: 20,
                                 ),
                               ),
-                            ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: PopupMenuButton(
+                                  color: Colors.white,
+                                  surfaceTintColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  position: PopupMenuPosition.under,
+                                  onSelected:
+                                      (value) =>
+                                      _controller.onMenuClicked(context, value),
+                                  itemBuilder: (BuildContext bc) {
+                                    return [
+                                      PopupMenuItem(
+                                        padding: EdgeInsets.zero,
+                                        value: 0,
+                                        child: Container(
+                                          height: 44,
+                                          padding: EdgeInsets.zero,
+                                          decoration: const BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.black38,
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Report',
+                                              style: const TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 1,
+                                        child: Container(
+                                          height: 44,
+                                          padding: EdgeInsets.zero,
+                                          child: Center(
+                                            child: Text(
+                                              'Reset Password',
+                                              style: const TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ];
+                                  },
+                                  icon: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: const Icon(
+                                      Icons.settings,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 10),
                           Center(
@@ -153,13 +166,28 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           InkWell(
-                            onTap: () => _controller.onDateClicked(context),
+                            onTap: () => _controller.onInvoiceDateClicked(context),
                             child: IconTextField(
                               controller: _controller.invoiceDateController,
                               hint: 'Enter invoice date',
                               textInputType: TextInputType.text,
                               whiteBackground: false,
                               label: 'Invoice Date',
+                              isEnabled: false,
+                              suffixIcon: 'assets/icons/ic_calendar.png',
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          InkWell(
+                            onTap:
+                                () =>
+                                    _controller.onPurchaseDateClicked(context),
+                            child: IconTextField(
+                              controller: _controller.purchaseDateController,
+                              hint: 'Enter purchase date',
+                              textInputType: TextInputType.text,
+                              whiteBackground: false,
+                              label: 'Purchase Date',
                               isEnabled: false,
                               suffixIcon: 'assets/icons/ic_calendar.png',
                             ),
@@ -174,13 +202,28 @@ class AddPurchaseBillScreen extends StatelessWidget {
                             icon: 'assets/icons/ic_rupee.png',
                           ),
                           const SizedBox(height: 40),
-                          Text(
-                            'Items',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: textColor,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Items',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: textColor,
+                                ),
+                              ),
+                              Obx(
+                                () => Text(
+                                  '${_controller.items.length} count',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: textColor,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 20),
                           Obx(
@@ -220,6 +263,14 @@ class AddPurchaseBillScreen extends StatelessWidget {
                       startColor: appColorGradient1,
                       endColor: appColorGradient2,
                     ),
+                  ),
+                ),
+                Obx(
+                      () => Visibility(
+                    visible: _controller.isLoading.value,
+                    child: Center(child: CircularProgressIndicator(
+                      color: Colors.white,
+                    )),
                   ),
                 ),
               ],

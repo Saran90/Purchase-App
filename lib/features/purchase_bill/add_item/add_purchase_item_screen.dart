@@ -132,19 +132,13 @@ class AddPurchaseItemScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: IconTextField(
-                              controller: _controller.totalItemsController,
-                              hint: 'Enter total items',
-                              textInputType: TextInputType.number,
-                              whiteBackground: false,
-                              label: 'Total items',
-                            ),
+                            child: SizedBox(),
                           ),
                         ],
                       ),
                       const SizedBox(height: 40),
                       AppButton(
-                        label: 'Save',
+                        label: 'Add',
                         onSubmit: _controller.onSaved,
                         startColor: appColorGradient1,
                         endColor: appColorGradient2,

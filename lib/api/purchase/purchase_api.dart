@@ -30,6 +30,8 @@ class PurchaseApi extends ApiClient {
           response.body,
         );
         return Right(purchaseResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));
@@ -56,6 +58,8 @@ class PurchaseApi extends ApiClient {
         DeletePurchaseResponse purchaseResponse =
             DeletePurchaseResponse.fromJson(response.body);
         return Right(purchaseResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));
@@ -81,6 +85,8 @@ class PurchaseApi extends ApiClient {
           response.body,
         );
         return Right(purchaseResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));
@@ -106,6 +112,8 @@ class PurchaseApi extends ApiClient {
           response.body,
         );
         return Right(productByBarcodeResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));
@@ -133,6 +141,8 @@ class PurchaseApi extends ApiClient {
           response.body,
         );
         return Right(suppliersResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));
@@ -160,6 +170,8 @@ class PurchaseApi extends ApiClient {
           response.body,
         );
         return Right(productsResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));
@@ -193,6 +205,8 @@ class PurchaseApi extends ApiClient {
           response.body,
         );
         return Right(purchaseBillsResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));

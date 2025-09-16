@@ -23,3 +23,5 @@ class APIFailure<T> extends Failure {
 class NetworkFailure extends Failure {}
 
 class CacheFailure extends Failure {}
+
+class AuthFailure extends Failure {}

@@ -1,5 +1,6 @@
 class PurchaseItem {
   int id;
+  int rowNumber;
   String name;
   String packaging;
   String barcode;
@@ -9,6 +10,7 @@ class PurchaseItem {
 
   PurchaseItem({
     required this.id,
+    required this.rowNumber,
     required this.name,
     required this.packaging,
     required this.barcode,

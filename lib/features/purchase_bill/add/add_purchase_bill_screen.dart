@@ -72,8 +72,10 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                   padding: EdgeInsets.zero,
                                   position: PopupMenuPosition.under,
                                   onSelected:
-                                      (value) =>
-                                      _controller.onMenuClicked(context, value),
+                                      (value) => _controller.onMenuClicked(
+                                        context,
+                                        value,
+                                      ),
                                   itemBuilder: (BuildContext bc) {
                                     return [
                                       PopupMenuItem(
@@ -166,7 +168,8 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           InkWell(
-                            onTap: () => _controller.onInvoiceDateClicked(context),
+                            onTap:
+                                () => _controller.onInvoiceDateClicked(context),
                             child: IconTextField(
                               controller: _controller.invoiceDateController,
                               hint: 'Enter invoice date',
@@ -244,6 +247,10 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                               PurchaseItemWidget(
                                                 purchaseItem:
                                                     _controller.items[index],
+                                                onDeleteClicked: () => _controller
+                                                    .onDeleteProductClicked(
+                                                  _controller.items[index],
+                                                ),
                                               ),
                                     ),
                           ),
@@ -266,11 +273,11 @@ class AddPurchaseBillScreen extends StatelessWidget {
                   ),
                 ),
                 Obx(
-                      () => Visibility(
+                  () => Visibility(
                     visible: _controller.isLoading.value,
-                    child: Center(child: CircularProgressIndicator(
-                      color: Colors.white,
-                    )),
+                    child: Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
                   ),
                 ),
               ],

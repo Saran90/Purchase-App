@@ -53,14 +53,13 @@ class AddPurchaseBillController extends GetxController {
         suppliers.value =
             r.dataList
                 ?.map(
-                  (e) =>
-                  Supplier(
+                  (e) => Supplier(
                     id: e.supplierId?.toInt() ?? 0,
                     name: e.supplierName ?? '',
                   ),
-            )
+                )
                 .toList() ??
-                [];
+            [];
         return suppliers;
       } else {
         suppliers.value = [];
@@ -83,7 +82,10 @@ class AddPurchaseBillController extends GetxController {
       minDate: DateTime(1950, 1, 1),
       maxDate: DateTime(2500, 12, 31),
     );
-    invoiceDateController.text = date?.toDDMMYYYY() ?? '';
+    if(date != null) {
+      selectedInvoiceDate.value = date;
+      invoiceDateController.text = date.toDDMMYYYY() ?? '';
+    }
   }
 
   Future<void> onPurchaseDateClicked(BuildContext context) async {
@@ -93,12 +95,15 @@ class AddPurchaseBillController extends GetxController {
       minDate: DateTime(1950, 1, 1),
       maxDate: DateTime(2500, 12, 31),
     );
-    purchaseDateController.text = date?.toDDMMYYYY() ?? '';
+    if(date != null) {
+      selectedPurchaseDate.value = date;
+      purchaseDateController.text = date.toDDMMYYYY() ?? '';
+    }
   }
 
   Future<void> onAddClicked() async {
     PurchaseItem? item =
-    await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
+        await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
     if (item != null) {
       items.add(item);
     }
@@ -110,35 +115,35 @@ class AddPurchaseBillController extends GetxController {
       billAmount: amountController.value.text.toDouble() ?? 0,
       invoiceDate: selectedInvoiceDate.value.toYYYYMMDD(),
       supplierId: selectedSupplier.value?.id ?? 0,
-      purchaseDate: selectedInvoiceDate.value.toYYYYMMDD(),
+      purchaseDate: selectedPurchaseDate.value.toYYYYMMDD(),
       purchaseId: purchaseId.value,
-      purchaseNo: 0,
+      purchaseNo: purchaseNo.value,
       userId: userId.value,
       supplierName: selectedSupplier.value?.name,
       itemsList:
-      items
-          .map(
-            (element) =>
-            Items(
-              rowNumber: 0,
-              quantity: element.quantity,
-              freeQuantity: element.freeQuantity,
-              mrp: element.price,
-              productId: element.id,
-              productName: element.name,
-              purchaseDetailId: 0,
-            ),
-      )
-          .toList(),
+          items
+              .map(
+                (element) => Items(
+                  rowNumber: element.rowNumber,
+                  quantity: element.quantity,
+                  freeQuantity: element.freeQuantity,
+                  mrp: element.price,
+                  productId: element.id,
+                  productName: element.name,
+                  purchaseDetailId: 0,
+                ),
+              )
+              .toList(),
     );
     var result = await purchaseApi.addPurchase(addPurchaseRequest);
     result.fold(
-          (l) {
+      (l) {
         if (l is APIFailure) {
           ErrorResponse? errorResponse = l.error;
           showToast(message: errorResponse?.message ?? apiFailureMessage);
         } else if (l is ServerFailure) {
           showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
         } else if (l is NetworkFailure) {
           showToast(message: networkFailureMessage);
         } else {
@@ -146,7 +151,7 @@ class AddPurchaseBillController extends GetxController {
         }
         isLoading.value = false;
       },
-          (r) {
+      (r) {
         if (r != null) {
           purchaseId.value = r.purchaseId ?? 0;
           showToast(
@@ -168,12 +173,13 @@ class AddPurchaseBillController extends GetxController {
     if (purchaseId.value != 0) {
       var result = await purchaseApi.getPurchaseById(purchaseId.value);
       result.fold(
-            (l) {
+        (l) {
           if (l is APIFailure) {
             ErrorResponse? errorResponse = l.error;
             showToast(message: errorResponse?.message ?? apiFailureMessage);
           } else if (l is ServerFailure) {
             showToast(message: l.message ?? serverFailureMessage);
+          } else if (l is AuthFailure) {
           } else if (l is NetworkFailure) {
             showToast(message: networkFailureMessage);
           } else {
@@ -181,7 +187,7 @@ class AddPurchaseBillController extends GetxController {
           }
           isLoading.value = false;
         },
-            (r) {
+        (r) {
           if (r != null) {
             selectedSupplier.value = Supplier(
               id: r.supplierId?.toInt() ?? 0,
@@ -200,20 +206,21 @@ class AddPurchaseBillController extends GetxController {
                 selectedPurchaseDate.value.toDDMMYYYY();
             amountController.text = r.billAmount?.toString() ?? '';
             if (r.itemsList != null) {
-              items.value = r.itemsList
-                  ?.map(
-                    (e) =>
-                    PurchaseItem(
-                      id: e.productId?.toInt() ?? 0,
-                      name: e.productName ?? '',
-                      packaging: '',
-                      barcode: '',
-                      price: e.mrp?.toDouble() ?? 0,
-                      freeQuantity: e.freeQuantity?.toInt() ?? 0,
-                      quantity: e.quantity?.toInt() ?? 0,
-                    ),
-              )
-                  .toList() ??
+              items.value =
+                  r.itemsList
+                      ?.map(
+                        (e) => PurchaseItem(
+                          id: e.productId?.toInt() ?? 0,
+                          name: e.productName ?? '',
+                          packaging: '',
+                          barcode: '',
+                          rowNumber: e.rowNumber?.toInt() ?? 0,
+                          price: e.mrp?.toDouble() ?? 0,
+                          freeQuantity: e.freeQuantity?.toInt() ?? 0,
+                          quantity: e.quantity?.toInt() ?? 0,
+                        ),
+                      )
+                      .toList() ??
                   [];
             }
             Get.focusScope?.unfocus();
@@ -226,5 +233,9 @@ class AddPurchaseBillController extends GetxController {
 
   void onBackClicked() {
     Get.back();
+  }
+
+  void onDeleteProductClicked(PurchaseItem item) {
+    items.removeWhere((element) => element.id == item.id);
   }
 }

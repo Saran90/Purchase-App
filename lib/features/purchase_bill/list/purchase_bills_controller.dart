@@ -1,8 +1,10 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:purchase_app/api/purchase/models/delete_purchase_request.dart';
 import 'package:purchase_app/api/purchase/purchase_api.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_bill.dart';
 import 'package:purchase_app/utils/extensions.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../api/error_response.dart';
 import '../../../data/error/failures.dart';
@@ -34,6 +36,7 @@ class PurchaseBillsController extends GetxController {
           showToast(message: errorResponse?.message ?? apiFailureMessage);
         } else if (l is ServerFailure) {
           showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
         } else if (l is NetworkFailure) {
           showToast(message: networkFailureMessage);
         } else {
@@ -77,5 +80,37 @@ class PurchaseBillsController extends GetxController {
   Future<void> onBillClicked(PurchaseBill purchaseBill) async {
     await Get.toNamed(addPurchaseBillRoute, arguments: purchaseBill.purchaseId);
     loadPurchaseBills();
+  }
+
+  Future<void> onItemDeleteClicked(PurchaseBill purchaseBill) async {
+    isLoading.value = true;
+    var result = await purchaseApi.deletePurchase(
+      DeletePurchaseRequest(purchaseId: purchaseBill.purchaseId),
+    );
+    result.fold(
+      (l) {
+        if (l is APIFailure) {
+          ErrorResponse? errorResponse = l.error;
+          showToast(message: errorResponse?.message ?? apiFailureMessage);
+        } else if (l is ServerFailure) {
+          showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
+        } else if (l is NetworkFailure) {
+          showToast(message: networkFailureMessage);
+        } else {
+          showToast(message: unknownFailureMessage);
+        }
+        isLoading.value = false;
+      },
+      (r) {
+        if (r != null) {
+          showToast(message: 'Item deleted', type: ToastificationType.success);
+          loadPurchaseBills();
+        } else {
+          showToast(message: networkFailureMessage);
+        }
+        isLoading.value = false;
+      },
+    );
   }
 }

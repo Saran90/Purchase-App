@@ -2,107 +2,117 @@ import 'package:flutter/material.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
 
 class PurchaseItemWidget extends StatelessWidget {
-  const PurchaseItemWidget({super.key, required this.purchaseItem});
+  const PurchaseItemWidget({super.key, required this.purchaseItem,
+  required this.onDeleteClicked});
 
   final PurchaseItem purchaseItem;
+  final Function() onDeleteClicked;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white10,
-      ),
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white10,
+            ),
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.only(bottom: 10),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/icons/ic_product.png',
-                  height: 30,
-                  width: 30,
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 10),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text(
-                        purchaseItem.name,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis
-                        ),
+                      Image.asset(
+                        'assets/icons/ic_product.png',
+                        height: 30,
+                        width: 30,
+                        color: Colors.white,
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            'Quantity: ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white60,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              purchaseItem.name,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                overflow: TextOverflow.ellipsis
+                              ),
                             ),
-                          ),
-                          Text(
-                            purchaseItem.quantity.toString(),
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white60,
+                            Row(
+                              children: [
+                                Text(
+                                  'Quantity: ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white60,
+                                  ),
+                                ),
+                                Text(
+                                  purchaseItem.quantity.toString(),
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white60,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
+                const SizedBox(width: 20),
+                Column(
+                  children: [
+                    Text(
+                      '₹${purchaseItem.price}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Free: ',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white60,
+                          ),
+                        ),
+                        Text(
+                          purchaseItem.freeQuantity.toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white60,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          const SizedBox(width: 20),
-          Column(
-            children: [
-              Text(
-                '₹${purchaseItem.price}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    'Free: ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white60,
-                    ),
-                  ),
-                  Text(
-                    purchaseItem.freeQuantity.toString(),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white60,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 5),
+        IconButton(onPressed: onDeleteClicked, icon: Icon(Icons.delete, color: Colors.red, size: 30,))
+      ],
     );
   }
 }

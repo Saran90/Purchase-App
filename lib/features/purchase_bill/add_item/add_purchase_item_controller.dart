@@ -95,6 +95,7 @@ class AddPurchaseItemController extends GetxController {
         price: mrpController.text.toDouble() ?? 0,
         freeQuantity: freeQuantityController.text.toInt() ?? 0,
         quantity: quantityController.text.toInt() ?? 0,
+        rowNumber: 0
       ),
     );
   }
@@ -113,6 +114,7 @@ class AddPurchaseItemController extends GetxController {
           showToast(message: errorResponse?.message ?? apiFailureMessage);
         } else if (l is ServerFailure) {
           showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
         } else if (l is NetworkFailure) {
           showToast(message: networkFailureMessage);
         } else {

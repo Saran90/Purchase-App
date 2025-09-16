@@ -60,6 +60,7 @@ class PurchaseBillsScreen extends StatelessWidget {
                                   child: PurchaseItemWidget(
                                     purchaseBill:
                                         _controller.purchaseBills[index],
+                                    onDeleteClicked: () => _controller.onItemDeleteClicked(_controller.purchaseBills[index]),
                                   ),
                                 ),
                           ),

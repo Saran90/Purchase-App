@@ -106,8 +106,7 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onAddClicked() async {
-    var item =
-        await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
+    var item = await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
     onItemAdded(item);
   }
 
@@ -117,19 +116,19 @@ class AddPurchaseBillController extends GetxController {
         if (_hasDifferentMrp(item)) {
           showDuplicatePriceProductDialog(
             item,
-                () {
+            () {
               Get.back();
               items.add(item);
               update();
             },
-                () {
+            () {
               Get.back();
             },
           );
         } else {
           showDuplicateProductDialog(
             item,
-                () {
+            () {
               Get.back();
               for (int i = 0; i < items.length; i++) {
                 if (items[i].id == item.id) {
@@ -140,7 +139,7 @@ class AddPurchaseBillController extends GetxController {
               }
               items.refresh();
             },
-                () {
+            () {
               Get.back();
             },
           );
@@ -152,60 +151,66 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onSaveClicked() async {
-    AddPurchaseRequest addPurchaseRequest = AddPurchaseRequest(
-      invoiceNo: invoiceNumberController.value.text,
-      billAmount: amountController.value.text.toDouble() ?? 0,
-      invoiceDate: selectedInvoiceDate.value.toYYYYMMDD(),
-      supplierId: selectedSupplier.value?.id ?? 0,
-      purchaseDate: selectedPurchaseDate.value.toYYYYMMDD(),
-      purchaseId: purchaseId.value,
-      purchaseNo: purchaseNo.value,
-      userId: userId.value,
-      supplierName: selectedSupplier.value?.name,
-      itemsList:
-          items
-              .map(
-                (element) => Items(
-                  rowNumber: element.rowNumber,
-                  quantity: element.quantity,
-                  freeQuantity: element.freeQuantity,
-                  mrp: element.price,
-                  productId: element.id,
-                  productName: element.name,
-                  purchaseDetailId: 0,
-                ),
-              )
-              .toList(),
-    );
-    var result = await purchaseApi.addPurchase(addPurchaseRequest);
-    result.fold(
-      (l) {
-        if (l is APIFailure) {
-          ErrorResponse? errorResponse = l.error;
-          showToast(message: errorResponse?.message ?? apiFailureMessage);
-        } else if (l is ServerFailure) {
-          showToast(message: l.message ?? serverFailureMessage);
-        } else if (l is AuthFailure) {
-        } else if (l is NetworkFailure) {
-          showToast(message: networkFailureMessage);
-        } else {
-          showToast(message: unknownFailureMessage);
-        }
-        isLoading.value = false;
-      },
-      (r) {
-        if (r != null) {
-          purchaseId.value = r.purchaseId ?? 0;
-          showToast(
-            message: 'Purchase updated',
-            type: ToastificationType.success,
-          );
-          Get.back();
-        } else {
-          showToast(message: networkFailureMessage);
-        }
-      },
-    );
+    if (selectedSupplier.value != null &&
+        invoiceNumberController.text.isNotEmpty &&
+        amountController.text.isNotEmpty) {
+      AddPurchaseRequest addPurchaseRequest = AddPurchaseRequest(
+        invoiceNo: invoiceNumberController.value.text,
+        billAmount: amountController.value.text.toDouble() ?? 0,
+        invoiceDate: selectedInvoiceDate.value.toYYYYMMDD(),
+        supplierId: selectedSupplier.value?.id ?? 0,
+        purchaseDate: selectedPurchaseDate.value.toYYYYMMDD(),
+        purchaseId: purchaseId.value,
+        purchaseNo: purchaseNo.value,
+        userId: userId.value,
+        supplierName: selectedSupplier.value?.name,
+        itemsList:
+            items
+                .map(
+                  (element) => Items(
+                    rowNumber: element.rowNumber,
+                    quantity: element.quantity,
+                    freeQuantity: element.freeQuantity,
+                    mrp: element.price,
+                    productId: element.id,
+                    productName: element.name,
+                    purchaseDetailId: 0,
+                  ),
+                )
+                .toList(),
+      );
+      var result = await purchaseApi.addPurchase(addPurchaseRequest);
+      result.fold(
+        (l) {
+          if (l is APIFailure) {
+            ErrorResponse? errorResponse = l.error;
+            showToast(message: errorResponse?.message ?? apiFailureMessage);
+          } else if (l is ServerFailure) {
+            showToast(message: l.message ?? serverFailureMessage);
+          } else if (l is AuthFailure) {
+          } else if (l is NetworkFailure) {
+            showToast(message: networkFailureMessage);
+          } else {
+            showToast(message: unknownFailureMessage);
+          }
+          isLoading.value = false;
+        },
+        (r) {
+          if (r != null) {
+            purchaseId.value = r.purchaseId ?? 0;
+            showToast(
+              message: 'Purchase updated',
+              type: ToastificationType.success,
+            );
+            Get.back();
+          } else {
+            showToast(message: networkFailureMessage);
+          }
+        },
+      );
+    } else {
+      showToast(message: 'Please provide required fields');
+    }
   }
 
   void onMenuClicked(BuildContext context, int value) {}
@@ -398,7 +403,8 @@ class AddPurchaseBillController extends GetxController {
 
   Future<void> onItemClicked(PurchaseItem purchaseItem) async {
     var item =
-        await Get.toNamed(addPurchaseItemRoute, arguments: purchaseItem) as PurchaseItem?;
+        await Get.toNamed(addPurchaseItemRoute, arguments: purchaseItem)
+            as PurchaseItem?;
     onItemAdded(item);
   }
 }

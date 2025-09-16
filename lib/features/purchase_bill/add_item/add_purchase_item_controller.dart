@@ -2,6 +2,7 @@ import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:purchase_app/api/purchase/purchase_api.dart';
 import 'package:purchase_app/features/purchase_bill/models/product_item.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
@@ -27,9 +28,26 @@ class AddPurchaseItemController extends GetxController {
   Rx<ProductItem?> selectedProductItem = Rx<ProductItem?>(null);
   RxList<ProductItem> productItems = RxList([]);
   RxBool isLoading = false.obs;
+  RxInt purchaseId = 0.obs;
+
+  @override
+  void onInit() {
+    PurchaseItem? item = Get.arguments as PurchaseItem?;
+    if (item != null) {
+      nameController.text = item.name;
+      packagingController.text = item.packaging;
+      mrpController.text = item.price.toString();
+      barcodeController.text = item.barcode;
+      quantityController.text = item.quantity.toString();
+      freeQuantityController.text = item.freeQuantity.toString();
+      purchaseId.value = item.id;
+      Get.focusScope?.unfocus();
+    }
+    super.onInit();
+  }
 
   Future<List<ProductItem>> getProductSuggestions(String pattern) async {
-    if (pattern.isEmpty || pattern.length < 4) {
+    if (pattern.isEmpty || pattern.length < 3) {
       return [];
     }
     var result = await purchaseApi.getProducts(name: pattern);
@@ -62,6 +80,7 @@ class AddPurchaseItemController extends GetxController {
     packagingController.text = item.packing;
     mrpController.text = item.mrp.toString();
     barcodeController.text = item.barCode;
+    purchaseId.value = item.id;
   }
 
   Future<void> onBarcodeClicked(BuildContext context) async {
@@ -89,18 +108,22 @@ class AddPurchaseItemController extends GetxController {
   }
 
   void onSaved() {
-    Get.back(
-      result: PurchaseItem(
-        id: selectedProductItem.value?.id ?? 0,
-        name: nameController.text,
-        packaging: packagingController.text,
-        barcode: barcodeController.text,
-        price: mrpController.text.toDouble() ?? 0,
-        freeQuantity: freeQuantityController.text.toInt() ?? 0,
-        quantity: quantityController.text.toInt() ?? 0,
-        rowNumber: 0,
-      ),
-    );
+    if (nameController.text.isNotEmpty && mrpController.text.isNotEmpty) {
+      Get.back(
+        result: PurchaseItem(
+          id: purchaseId.value,
+          name: nameController.text,
+          packaging: packagingController.text,
+          barcode: barcodeController.text,
+          price: mrpController.text.toDouble() ?? 0,
+          freeQuantity: freeQuantityController.text.toInt() ?? 0,
+          quantity: quantityController.text.toInt() ?? 0,
+          rowNumber: 0,
+        ),
+      );
+    } else {
+      showToast(message: 'Name and MRP should not be empty');
+    }
   }
 
   void onBackClicked() {

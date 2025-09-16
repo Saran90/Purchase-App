@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:purchase_app/api/purchase/models/delete_purchase_request.dart';
@@ -83,33 +84,75 @@ class PurchaseBillsController extends GetxController {
   }
 
   Future<void> onItemDeleteClicked(PurchaseBill purchaseBill) async {
-    isLoading.value = true;
-    var result = await purchaseApi.deletePurchase(
-      DeletePurchaseRequest(purchaseId: purchaseBill.purchaseId),
-    );
-    result.fold(
-      (l) {
-        if (l is APIFailure) {
-          ErrorResponse? errorResponse = l.error;
-          showToast(message: errorResponse?.message ?? apiFailureMessage);
-        } else if (l is ServerFailure) {
-          showToast(message: l.message ?? serverFailureMessage);
-        } else if (l is AuthFailure) {
-        } else if (l is NetworkFailure) {
-          showToast(message: networkFailureMessage);
-        } else {
-          showToast(message: unknownFailureMessage);
-        }
-        isLoading.value = false;
+    showDeleteConfirmationDialog(
+      purchaseBill,
+      () async {
+        Get.back();
+        isLoading.value = true;
+        var result = await purchaseApi.deletePurchase(
+          DeletePurchaseRequest(purchaseId: purchaseBill.purchaseId),
+        );
+        result.fold(
+          (l) {
+            if (l is APIFailure) {
+              ErrorResponse? errorResponse = l.error;
+              showToast(message: errorResponse?.message ?? apiFailureMessage);
+            } else if (l is ServerFailure) {
+              showToast(message: l.message ?? serverFailureMessage);
+            } else if (l is AuthFailure) {
+            } else if (l is NetworkFailure) {
+              showToast(message: networkFailureMessage);
+            } else {
+              showToast(message: unknownFailureMessage);
+            }
+            isLoading.value = false;
+          },
+          (r) {
+            if (r != null) {
+              showToast(
+                message: 'Bill deleted',
+                type: ToastificationType.success,
+              );
+              loadPurchaseBills();
+            } else {
+              showToast(message: networkFailureMessage);
+            }
+            isLoading.value = false;
+          },
+        );
       },
-      (r) {
-        if (r != null) {
-          showToast(message: 'Item deleted', type: ToastificationType.success);
-          loadPurchaseBills();
-        } else {
-          showToast(message: networkFailureMessage);
-        }
-        isLoading.value = false;
+      () {
+        Get.back();
+      },
+    );
+  }
+
+  void showDeleteConfirmationDialog(
+    PurchaseBill item,
+    Function() onOkClicked,
+    Function() onCancelClicked,
+  ) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Bill"),
+          content: Text("Do you really want to delete this bill?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                onCancelClicked();
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                onOkClicked();
+              },
+            ),
+          ],
+        );
       },
     );
   }

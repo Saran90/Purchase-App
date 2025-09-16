@@ -244,12 +244,15 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                       itemCount: _controller.items.length,
                                       itemBuilder:
                                           (context, index) =>
-                                              PurchaseItemWidget(
-                                                purchaseItem:
+                                              InkWell(
+                                                onTap: () => _controller.onItemClicked(_controller.items[index]),
+                                                child: PurchaseItemWidget(
+                                                  purchaseItem:
+                                                      _controller.items[index],
+                                                  onDeleteClicked: () => _controller
+                                                      .onDeleteProductClicked(
                                                     _controller.items[index],
-                                                onDeleteClicked: () => _controller
-                                                    .onDeleteProductClicked(
-                                                  _controller.items[index],
+                                                  ),
                                                 ),
                                               ),
                                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:purchase_app/core/widgets/app_button.dart';
 import 'package:purchase_app/features/purchase_bill/models/product_item.dart';
@@ -100,9 +101,12 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             child: IconTextField(
                               controller: _controller.quantityController,
                               hint: 'Enter quantity',
-                              textInputType: TextInputType.number,
+                              textInputType: TextInputType.numberWithOptions(signed: false,decimal: true),
                               whiteBackground: false,
                               label: 'Quantity',
+                              formatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                              ],
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -110,9 +114,12 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             child: IconTextField(
                               controller: _controller.freeQuantityController,
                               hint: 'Enter free quantity',
-                              textInputType: TextInputType.number,
+                              textInputType: TextInputType.numberWithOptions(signed: false,decimal: true),
                               whiteBackground: false,
                               label: 'Free Quantity',
+                              formatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                              ],
                             ),
                           ),
                         ],
@@ -125,9 +132,12 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             child: IconTextField(
                               controller: _controller.mrpController,
                               hint: 'Enter mrp',
-                              textInputType: TextInputType.number,
+                              textInputType: TextInputType.numberWithOptions(signed: false,decimal: true),
                               whiteBackground: false,
                               label: 'MRP',
+                              formatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                              ],
                             ),
                           ),
                           const SizedBox(width: 10),

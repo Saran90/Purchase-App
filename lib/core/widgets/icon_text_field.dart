@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class IconTextField extends StatefulWidget {
@@ -10,6 +11,7 @@ class IconTextField extends StatefulWidget {
     this.icon,
     this.suffixIcon,
     this.label,
+    this.formatters,
     this.textColor = Colors.white,
     this.textInputType = TextInputType.text,
     this.isPassword = false,
@@ -22,6 +24,7 @@ class IconTextField extends StatefulWidget {
   final String hint;
   final String? label;
   final TextEditingController controller;
+  final List<TextInputFormatter>? formatters;
   final bool isPassword;
   final bool isMultiLine;
   final bool isEnabled;
@@ -101,6 +104,7 @@ class _IconTextFieldState extends State<IconTextField> {
                           ),
                           controller: widget.controller,
                           keyboardType: widget.textInputType,
+                          inputFormatters: widget.formatters,
                           minLines: 1,
                           maxLines: 5,
                           decoration: InputDecoration(
@@ -136,6 +140,7 @@ class _IconTextFieldState extends State<IconTextField> {
                           controller: widget.controller,
                           obscureText: widget.isPassword ? !isVisible : false,
                           keyboardType: widget.textInputType,
+                          inputFormatters: widget.formatters,
                           decoration: InputDecoration(
                             hintText: widget.hint,
                             hintStyle: TextStyle(

@@ -48,7 +48,7 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<List<Supplier>> getSupplierSuggestions(String pattern) async {
-    if (pattern.isEmpty || pattern.length < 4) {
+    if (pattern.isEmpty || pattern.length < 3) {
       return [];
     }
     var result = await purchaseApi.getSuppliers(name: pattern);
@@ -106,26 +106,30 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onAddClicked() async {
-    PurchaseItem? item =
+    var item =
         await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
+    onItemAdded(item);
+  }
+
+  void onItemAdded(PurchaseItem? item) {
     if (item != null) {
       if (_isAlreadyAdded(item)) {
         if (_hasDifferentMrp(item)) {
           showDuplicatePriceProductDialog(
             item,
-            () {
+                () {
               Get.back();
               items.add(item);
               update();
             },
-            () {
+                () {
               Get.back();
             },
           );
         } else {
           showDuplicateProductDialog(
             item,
-            () {
+                () {
               Get.back();
               for (int i = 0; i < items.length; i++) {
                 if (items[i].id == item.id) {
@@ -136,7 +140,7 @@ class AddPurchaseBillController extends GetxController {
               }
               items.refresh();
             },
-            () {
+                () {
               Get.back();
             },
           );
@@ -274,8 +278,17 @@ class AddPurchaseBillController extends GetxController {
   }
 
   void onDeleteProductClicked(PurchaseItem item) {
-    items.removeWhere(
-      (element) => (element.id == item.id) && (element.price == item.price),
+    showDeleteConfirmationDialog(
+      item,
+      () {
+        Get.back();
+        items.removeWhere(
+          (element) => (element.id == item.id) && (element.price == item.price),
+        );
+      },
+      () {
+        Get.back();
+      },
     );
   }
 
@@ -351,5 +364,41 @@ class AddPurchaseBillController extends GetxController {
         );
       },
     );
+  }
+
+  void showDeleteConfirmationDialog(
+    PurchaseItem item,
+    Function() onOkClicked,
+    Function() onCancelClicked,
+  ) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Product"),
+          content: Text("Do you really want to delete this item?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                onCancelClicked();
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                onOkClicked();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> onItemClicked(PurchaseItem purchaseItem) async {
+    var item =
+        await Get.toNamed(addPurchaseItemRoute, arguments: purchaseItem) as PurchaseItem?;
+    onItemAdded(item);
   }
 }

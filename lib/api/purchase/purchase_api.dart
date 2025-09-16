@@ -17,14 +17,19 @@ import '../endpoints.dart';
 import '../error_response.dart';
 
 class PurchaseApi extends ApiClient {
-  PurchaseApi({required baseUrl}) : super(baseUrl: apiBaseUrl,isAuthenticated: true);
+  PurchaseApi({required baseUrl})
+    : super(baseUrl: apiBaseUrl, isAuthenticated: true);
 
   Future<Either<Failure, AddPurchaseResponse?>> addPurchase(
     AddPurchaseRequest request,
   ) async {
     try {
       print('Request: ${request.toJson()}');
-      var response = await post(addPurchaseUrl, request.toJson(), contentType: 'application/json');
+      var response = await post(
+        addPurchaseUrl,
+        request.toJson(),
+        contentType: 'application/json',
+      );
       if (response.isOk) {
         AddPurchaseResponse purchaseResponse = AddPurchaseResponse.fromJson(
           response.body,
@@ -53,7 +58,10 @@ class PurchaseApi extends ApiClient {
     DeletePurchaseRequest request,
   ) async {
     try {
-      var response = await post(deletePurchaseUrl, request.toJson());
+      var response = await post(
+        '$deletePurchaseUrl?purchaseId=${request.purchaseId}',
+        {},
+      );
       if (response.isOk) {
         DeletePurchaseResponse purchaseResponse =
             DeletePurchaseResponse.fromJson(response.body);
@@ -104,13 +112,14 @@ class PurchaseApi extends ApiClient {
     }
   }
 
-  Future<Either<Failure, GetProductByBarcodeResponse?>> getProductByBarcode(String barcode) async {
+  Future<Either<Failure, GetProductByBarcodeResponse?>> getProductByBarcode(
+    String barcode,
+  ) async {
     try {
       var response = await get('$getProductByCodeUrl?barCode=$barcode');
       if (response.isOk) {
-        GetProductByBarcodeResponse productByBarcodeResponse = GetProductByBarcodeResponse.fromJson(
-          response.body,
-        );
+        GetProductByBarcodeResponse productByBarcodeResponse =
+            GetProductByBarcodeResponse.fromJson(response.body);
         return Right(productByBarcodeResponse);
       } else if (response.statusCode == 401) {
         return Left(AuthFailure());
@@ -195,15 +204,17 @@ class PurchaseApi extends ApiClient {
     String? endDate,
   }) async {
     try {
-      var response = await get(getPurchasesUrl, query: {
-        if (supplierId != null) 'supplierId': supplierId,
-        if (startDate != null) 'strFromDate': startDate,
-        if (endDate != null) 'strTillDate': endDate,
-      });
+      var response = await get(
+        getPurchasesUrl,
+        query: {
+          if (supplierId != null) 'supplierId': supplierId,
+          if (startDate != null) 'strFromDate': startDate,
+          if (endDate != null) 'strTillDate': endDate,
+        },
+      );
       if (response.isOk) {
-        GetPurchaseBillsResponse purchaseBillsResponse = GetPurchaseBillsResponse.fromJson(
-          response.body,
-        );
+        GetPurchaseBillsResponse purchaseBillsResponse =
+            GetPurchaseBillsResponse.fromJson(response.body);
         return Right(purchaseBillsResponse);
       } else if (response.statusCode == 401) {
         return Left(AuthFailure());

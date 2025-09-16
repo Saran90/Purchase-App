@@ -61,78 +61,78 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                   size: 20,
                                 ),
                               ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: PopupMenuButton(
-                                  color: Colors.white,
-                                  surfaceTintColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                  position: PopupMenuPosition.under,
-                                  onSelected:
-                                      (value) => _controller.onMenuClicked(
-                                        context,
-                                        value,
-                                      ),
-                                  itemBuilder: (BuildContext bc) {
-                                    return [
-                                      PopupMenuItem(
-                                        padding: EdgeInsets.zero,
-                                        value: 0,
-                                        child: Container(
-                                          height: 44,
-                                          padding: EdgeInsets.zero,
-                                          decoration: const BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: Colors.black38,
-                                                width: 1,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'Report',
-                                              style: const TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        value: 1,
-                                        child: Container(
-                                          height: 44,
-                                          padding: EdgeInsets.zero,
-                                          child: Center(
-                                            child: Text(
-                                              'Reset Password',
-                                              style: const TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ];
-                                  },
-                                  icon: Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: const Icon(
-                                      Icons.settings,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // Align(
+                              //   alignment: Alignment.centerRight,
+                              //   child: PopupMenuButton(
+                              //     color: Colors.white,
+                              //     surfaceTintColor: Colors.transparent,
+                              //     shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(10),
+                              //     ),
+                              //     padding: EdgeInsets.zero,
+                              //     position: PopupMenuPosition.under,
+                              //     onSelected:
+                              //         (value) => _controller.onMenuClicked(
+                              //           context,
+                              //           value,
+                              //         ),
+                              //     itemBuilder: (BuildContext bc) {
+                              //       return [
+                              //         PopupMenuItem(
+                              //           padding: EdgeInsets.zero,
+                              //           value: 0,
+                              //           child: Container(
+                              //             height: 44,
+                              //             padding: EdgeInsets.zero,
+                              //             decoration: const BoxDecoration(
+                              //               border: Border(
+                              //                 bottom: BorderSide(
+                              //                   color: Colors.black38,
+                              //                   width: 1,
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //             child: Center(
+                              //               child: Text(
+                              //                 'Report',
+                              //                 style: const TextStyle(
+                              //                   color: Colors.black87,
+                              //                   fontSize: 14,
+                              //                   fontWeight: FontWeight.w500,
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         PopupMenuItem(
+                              //           value: 1,
+                              //           child: Container(
+                              //             height: 44,
+                              //             padding: EdgeInsets.zero,
+                              //             child: Center(
+                              //               child: Text(
+                              //                 'Reset Password',
+                              //                 style: const TextStyle(
+                              //                   color: Colors.black87,
+                              //                   fontSize: 14,
+                              //                   fontWeight: FontWeight.w500,
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       ];
+                              //     },
+                              //     icon: Padding(
+                              //       padding: const EdgeInsets.only(bottom: 10),
+                              //       child: const Icon(
+                              //         Icons.settings,
+                              //         size: 20,
+                              //         color: Colors.white,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
                           const SizedBox(height: 10),

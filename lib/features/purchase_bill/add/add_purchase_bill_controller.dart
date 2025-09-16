@@ -1,8 +1,10 @@
 import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:purchase_app/api/purchase/models/add_purchase_request.dart';
 import 'package:purchase_app/api/purchase/purchase_api.dart';
+import 'package:purchase_app/features/purchase_bill/models/product_item.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
 import 'package:purchase_app/features/purchase_bill/models/supplier.dart';
 import 'package:purchase_app/main.dart';
@@ -38,6 +40,8 @@ class AddPurchaseBillController extends GetxController {
     if (id != null) {
       purchaseId.value = id;
     }
+    invoiceDateController.text = selectedInvoiceDate.value.toDDMMYYYY() ?? '';
+    purchaseDateController.text = selectedPurchaseDate.value.toDDMMYYYY() ?? '';
     getPurchase();
     userId.value = 1;
     super.onInit();
@@ -82,7 +86,7 @@ class AddPurchaseBillController extends GetxController {
       minDate: DateTime(1950, 1, 1),
       maxDate: DateTime(2500, 12, 31),
     );
-    if(date != null) {
+    if (date != null) {
       selectedInvoiceDate.value = date;
       invoiceDateController.text = date.toDDMMYYYY() ?? '';
     }
@@ -95,7 +99,7 @@ class AddPurchaseBillController extends GetxController {
       minDate: DateTime(1950, 1, 1),
       maxDate: DateTime(2500, 12, 31),
     );
-    if(date != null) {
+    if (date != null) {
       selectedPurchaseDate.value = date;
       purchaseDateController.text = date.toDDMMYYYY() ?? '';
     }
@@ -105,7 +109,41 @@ class AddPurchaseBillController extends GetxController {
     PurchaseItem? item =
         await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
     if (item != null) {
-      items.add(item);
+      if (_isAlreadyAdded(item)) {
+        if (_hasDifferentMrp(item)) {
+          showDuplicatePriceProductDialog(
+            item,
+            () {
+              Get.back();
+              items.add(item);
+              update();
+            },
+            () {
+              Get.back();
+            },
+          );
+        } else {
+          showDuplicateProductDialog(
+            item,
+            () {
+              Get.back();
+              for (int i = 0; i < items.length; i++) {
+                if (items[i].id == item.id) {
+                  items[i].quantity += item.quantity;
+                  items[i].freeQuantity += item.freeQuantity;
+                  break;
+                }
+              }
+              items.refresh();
+            },
+            () {
+              Get.back();
+            },
+          );
+        }
+      } else {
+        items.add(item);
+      }
     }
   }
 
@@ -236,6 +274,82 @@ class AddPurchaseBillController extends GetxController {
   }
 
   void onDeleteProductClicked(PurchaseItem item) {
-    items.removeWhere((element) => element.id == item.id);
+    items.removeWhere(
+      (element) => (element.id == item.id) && (element.price == item.price),
+    );
+  }
+
+  bool _isAlreadyAdded(PurchaseItem item) {
+    return items.any((element) => element.id == item.id);
+  }
+
+  bool _hasDifferentMrp(PurchaseItem item) {
+    return items.any(
+      (element) => (element.id == item.id) && (element.price != item.price),
+    );
+  }
+
+  void showDuplicateProductDialog(
+    PurchaseItem item,
+    Function() onOkClicked,
+    Function() onCancelClicked,
+  ) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Duplicate Product"),
+          content: Text(
+            "${item.name} already added. Do you want to update the quantity?",
+          ),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                onCancelClicked();
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                onOkClicked();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showDuplicatePriceProductDialog(
+    PurchaseItem item,
+    Function() onOkClicked,
+    Function() onCancelClicked,
+  ) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Duplicate Product"),
+          content: Text(
+            "Product ${item.name} with different MRP already added. Do you want to create a duplicate item with new price?",
+          ),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                onCancelClicked();
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                onOkClicked();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

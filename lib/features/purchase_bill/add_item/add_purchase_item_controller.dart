@@ -59,6 +59,9 @@ class AddPurchaseItemController extends GetxController {
 
   void onProductItemSelected(ProductItem item) {
     selectedProductItem.value = item;
+    packagingController.text = item.packing;
+    mrpController.text = item.mrp.toString();
+    barcodeController.text = item.barCode;
   }
 
   Future<void> onBarcodeClicked(BuildContext context) async {

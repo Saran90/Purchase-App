@@ -72,14 +72,14 @@ class AddPurchaseItemController extends GetxController {
       ),
       isShowFlashIcon: true,
       delayMillis: 2000,
-      cameraFace: CameraFace.front,
+      cameraFace: CameraFace.back,
     );
     if (res != null) {
       if (res == '-1') {
         res = '';
       }
       barcodeController.text = res;
-      if(res.isNotEmpty) {
+      if (res.isNotEmpty) {
         getProductByBarcode(res);
       }
     }
@@ -95,7 +95,7 @@ class AddPurchaseItemController extends GetxController {
         price: mrpController.text.toDouble() ?? 0,
         freeQuantity: freeQuantityController.text.toInt() ?? 0,
         quantity: quantityController.text.toInt() ?? 0,
-        rowNumber: 0
+        rowNumber: 0,
       ),
     );
   }
@@ -131,7 +131,10 @@ class AddPurchaseItemController extends GetxController {
             packing: r.packing ?? '',
             barCode: r.barCode ?? '',
           );
-        }
+          nameController.text = selectedProductItem.value?.name ?? '';
+          packagingController.text = selectedProductItem.value?.packing ?? '';
+          mrpController.text = selectedProductItem.value?.mrp.toString() ?? '';
+        } else {}
         isLoading.value = false;
       },
     );

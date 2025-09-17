@@ -88,10 +88,10 @@ class AddPurchaseItemScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                       IconTextField(
                         controller: _controller.packagingController,
-                        hint: 'Enter packaging',
+                        hint: 'Enter packing',
                         textInputType: TextInputType.text,
                         whiteBackground: false,
-                        label: 'Packaging',
+                        label: 'Packing',
                       ),
                       const SizedBox(height: 20),
                       Row(

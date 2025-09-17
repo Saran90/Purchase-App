@@ -137,12 +137,16 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           Center(
-                            child: Text(
-                              'Add Purchase Bill',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: textColor,
+                            child: Obx(
+                              () => Text(
+                                _controller.purchaseId.value == 0
+                                    ? 'Add Purchase Bill'
+                                    : _controller.invoiceNumber.value,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: textColor,
+                                ),
                               ),
                             ),
                           ),
@@ -243,18 +247,22 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                       shrinkWrap: true,
                                       itemCount: _controller.items.length,
                                       itemBuilder:
-                                          (context, index) =>
-                                              InkWell(
-                                                onTap: () => _controller.onItemClicked(_controller.items[index]),
-                                                child: PurchaseItemWidget(
-                                                  purchaseItem:
-                                                      _controller.items[index],
-                                                  onDeleteClicked: () => _controller
-                                                      .onDeleteProductClicked(
-                                                    _controller.items[index],
-                                                  ),
+                                          (context, index) => InkWell(
+                                            onTap:
+                                                () => _controller.onItemClicked(
+                                                  _controller.items[index],
                                                 ),
-                                              ),
+                                            child: PurchaseItemWidget(
+                                              purchaseItem:
+                                                  _controller.items[index],
+                                              onDeleteClicked:
+                                                  () => _controller
+                                                      .onDeleteProductClicked(
+                                                        _controller
+                                                            .items[index],
+                                                      ),
+                                            ),
+                                          ),
                                     ),
                           ),
                         ],

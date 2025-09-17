@@ -33,6 +33,7 @@ class AddPurchaseBillController extends GetxController {
   RxInt purchaseId = 0.obs;
   RxInt purchaseNo = 0.obs;
   RxInt userId = 0.obs;
+  RxString invoiceNumber = ''.obs;
 
   @override
   void onInit() {
@@ -242,6 +243,7 @@ class AddPurchaseBillController extends GetxController {
             );
             supplierController.text = r.supplierName ?? '';
             invoiceNumberController.text = r.invoiceNo ?? '';
+            invoiceNumber.value = r.invoiceNo ?? '';
             selectedInvoiceDate.value =
                 r.invoiceDate?.toDate() ?? DateTime.now();
             selectedPurchaseDate.value =
@@ -259,7 +261,7 @@ class AddPurchaseBillController extends GetxController {
                         (e) => PurchaseItem(
                           id: e.productId?.toInt() ?? 0,
                           name: e.productName ?? '',
-                          packaging: '',
+                          packaging: e.packing ?? '',
                           barcode: '',
                           rowNumber: e.rowNumber?.toInt() ?? 0,
                           price: e.mrp?.toDouble() ?? 0,

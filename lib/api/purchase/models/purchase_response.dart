@@ -2,13 +2,14 @@ class Items {
   num? purchaseDetailId;
   num? productId;
   String? productName;
+  String? packing;
   num? mrp;
   num? quantity;
   num? freeQuantity;
   num? rowNumber;
 
   Items(
-      {this.purchaseDetailId, this.productId, this.productName, this.mrp, this.quantity, this.freeQuantity, this.rowNumber});
+      {this.purchaseDetailId, this.productId, this.productName, this.mrp, this.packing, this.quantity, this.freeQuantity, this.rowNumber});
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -19,6 +20,7 @@ class Items {
     map["quantity"] = quantity;
     map["freeQuantity"] = freeQuantity;
     map["rowNumber"] = rowNumber;
+    map["packing"] = packing;
     return map;
   }
 
@@ -30,6 +32,7 @@ class Items {
     quantity = json["quantity"];
     freeQuantity = json["freeQuantity"];
     rowNumber = json["rowNumber"];
+    packing = json["packing"];
   }
 }
 

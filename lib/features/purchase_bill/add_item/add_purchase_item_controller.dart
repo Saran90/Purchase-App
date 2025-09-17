@@ -29,6 +29,7 @@ class AddPurchaseItemController extends GetxController {
   RxList<ProductItem> productItems = RxList([]);
   RxBool isLoading = false.obs;
   RxInt purchaseId = 0.obs;
+  RxInt rowNumber = 0.obs;
 
   @override
   void onInit() {
@@ -41,6 +42,7 @@ class AddPurchaseItemController extends GetxController {
       quantityController.text = item.quantity.toString();
       freeQuantityController.text = item.freeQuantity.toString();
       purchaseId.value = item.id;
+      rowNumber.value = item.rowNumber;
       Get.focusScope?.unfocus();
     }
     super.onInit();
@@ -118,7 +120,7 @@ class AddPurchaseItemController extends GetxController {
           price: mrpController.text.toDouble() ?? 0,
           freeQuantity: freeQuantityController.text.toInt() ?? 0,
           quantity: quantityController.text.toInt() ?? 0,
-          rowNumber: 0,
+          rowNumber: rowNumber.value,
         ),
       );
     } else {

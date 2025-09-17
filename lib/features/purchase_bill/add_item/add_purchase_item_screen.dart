@@ -105,7 +105,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
                               whiteBackground: false,
                               label: 'Quantity',
                               formatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                                FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)')),
                               ],
                             ),
                           ),
@@ -118,7 +118,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
                               whiteBackground: false,
                               label: 'Free Quantity',
                               formatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                                FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)')),
                               ],
                             ),
                           ),
@@ -136,7 +136,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
                               whiteBackground: false,
                               label: 'MRP',
                               formatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'^[1-9][0-9]*')),
+                                FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)')),
                               ],
                             ),
                           ),

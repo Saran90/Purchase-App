@@ -176,6 +176,7 @@ class AddPurchaseBillController extends GetxController {
                     productId: element.id,
                     productName: element.name,
                     purchaseDetailId: 0,
+                    packing: element.packaging
                   ),
                 )
                 .toList(),

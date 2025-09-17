@@ -151,6 +151,13 @@ class AddPurchaseBillController extends GetxController {
     }
   }
 
+  void onItemUpdated(PurchaseItem? item) {
+    if (item != null) {
+      int index = items.indexWhere((element) => element.id == item.id);
+      items[index] = item;
+    }
+  }
+
   Future<void> onSaveClicked() async {
     if (selectedSupplier.value != null &&
         invoiceNumberController.text.isNotEmpty &&
@@ -176,7 +183,7 @@ class AddPurchaseBillController extends GetxController {
                     productId: element.id,
                     productName: element.name,
                     purchaseDetailId: 0,
-                    packing: element.packaging
+                    packing: element.packaging,
                   ),
                 )
                 .toList(),
@@ -408,6 +415,6 @@ class AddPurchaseBillController extends GetxController {
     var item =
         await Get.toNamed(addPurchaseItemRoute, arguments: purchaseItem)
             as PurchaseItem?;
-    onItemAdded(item);
+    onItemUpdated(item);
   }
 }

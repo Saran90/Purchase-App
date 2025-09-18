@@ -95,6 +95,7 @@ class AddPurchaseItemController extends GetxController {
     mrpController.text = item.mrp.toString();
     barcodeController.text = item.barCode;
     purchaseId.value = item.id;
+    quantityFocusNode.requestFocus();
   }
 
   Future<void> onBarcodeClicked(BuildContext context) async {

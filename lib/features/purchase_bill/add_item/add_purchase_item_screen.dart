@@ -51,14 +51,16 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 20),
-                          Text(
-                            'Add item',
+                          Obx(() => Text(
+                            _controller.rowNumber.value == 0
+                                ? 'Add item'
+                                : 'Edit item',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: textColor,
                             ),
-                          ),
+                          ),),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -83,6 +85,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
                           suggestions: _controller.productItems,
                           selectedValue: _controller.selectedProductItem.value,
                           label: 'Name',
+                          focusNode: _controller.nameFocusNode,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -99,13 +102,19 @@ class AddPurchaseItemScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: IconTextField(
+                              focusNode: _controller.quantityFocusNode,
                               controller: _controller.quantityController,
                               hint: 'Enter quantity',
-                              textInputType: TextInputType.numberWithOptions(signed: false,decimal: true),
+                              textInputType: TextInputType.numberWithOptions(
+                                signed: false,
+                                decimal: true,
+                              ),
                               whiteBackground: false,
                               label: 'Quantity',
                               formatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)')),
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'(^\-?\d*\.?\d*)'),
+                                ),
                               ],
                             ),
                           ),
@@ -114,11 +123,16 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             child: IconTextField(
                               controller: _controller.freeQuantityController,
                               hint: 'Enter free quantity',
-                              textInputType: TextInputType.numberWithOptions(signed: false,decimal: true),
+                              textInputType: TextInputType.numberWithOptions(
+                                signed: false,
+                                decimal: true,
+                              ),
                               whiteBackground: false,
                               label: 'Free Quantity',
                               formatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)')),
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'(^\-?\d*\.?\d*)'),
+                                ),
                               ],
                             ),
                           ),
@@ -132,18 +146,21 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             child: IconTextField(
                               controller: _controller.mrpController,
                               hint: 'Enter mrp',
-                              textInputType: TextInputType.numberWithOptions(signed: false,decimal: true),
+                              textInputType: TextInputType.numberWithOptions(
+                                signed: false,
+                                decimal: true,
+                              ),
                               whiteBackground: false,
                               label: 'MRP',
                               formatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)')),
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'(^\-?\d*\.?\d*)'),
+                                ),
                               ],
                             ),
                           ),
                           const SizedBox(width: 10),
-                          Expanded(
-                            child: SizedBox(),
-                          ),
+                          Expanded(child: SizedBox()),
                         ],
                       ),
                       const SizedBox(height: 40),

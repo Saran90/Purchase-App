@@ -30,9 +30,14 @@ class AddPurchaseItemController extends GetxController {
   RxBool isLoading = false.obs;
   RxInt purchaseId = 0.obs;
   RxInt rowNumber = 0.obs;
+  late FocusNode quantityFocusNode;
+  late FocusNode nameFocusNode;
 
   @override
   void onInit() {
+    print('onInit');
+    quantityFocusNode = FocusNode();
+    nameFocusNode = FocusNode();
     PurchaseItem? item = Get.arguments as PurchaseItem?;
     if (item != null) {
       nameController.text = item.name;
@@ -43,7 +48,14 @@ class AddPurchaseItemController extends GetxController {
       freeQuantityController.text = item.freeQuantity.toString();
       purchaseId.value = item.id;
       rowNumber.value = item.rowNumber;
-      Get.focusScope?.unfocus();
+      Future.delayed(
+        Duration(milliseconds: 200),
+        () => Get.focusScope?.unfocus(),
+      );
+    } else {
+      Future.delayed(Duration(milliseconds: 500), () {
+        onBarcodeClicked(Get.context!);
+      });
     }
     super.onInit();
   }
@@ -87,7 +99,7 @@ class AddPurchaseItemController extends GetxController {
 
   Future<void> onBarcodeClicked(BuildContext context) async {
     String? res = await SimpleBarcodeScanner.scanBarcode(
-      context,
+      Get.context!,
       barcodeAppBar: const BarcodeAppBar(
         appBarTitle: 'Barcode',
         centerTitle: false,
@@ -101,6 +113,7 @@ class AddPurchaseItemController extends GetxController {
     if (res != null) {
       if (res == '-1') {
         res = '';
+        nameFocusNode.requestFocus();
       }
       barcodeController.text = res;
       if (res.isNotEmpty) {
@@ -111,18 +124,26 @@ class AddPurchaseItemController extends GetxController {
 
   void onSaved() {
     if (nameController.text.isNotEmpty && mrpController.text.isNotEmpty) {
-      Get.back(
-        result: PurchaseItem(
-          id: purchaseId.value,
-          name: nameController.text,
-          packaging: packagingController.text,
-          barcode: barcodeController.text,
-          price: mrpController.text.toDouble() ?? 0,
-          freeQuantity: freeQuantityController.text.toInt() ?? 0,
-          quantity: quantityController.text.toInt() ?? 0,
-          rowNumber: rowNumber.value,
-        ),
-      );
+      if ((quantityController.text.isEmpty || quantityController.text == '0') &&
+          (freeQuantityController.text.isEmpty ||
+              freeQuantityController.text == '0')) {
+        showToast(
+          message: 'Both Quantity and free quantity cannot be empty or 0',
+        );
+      } else {
+        Get.back(
+          result: PurchaseItem(
+            id: purchaseId.value,
+            name: nameController.text,
+            packaging: packagingController.text,
+            barcode: barcodeController.text,
+            price: mrpController.text.toDouble() ?? 0,
+            freeQuantity: freeQuantityController.text.toInt() ?? 0,
+            quantity: quantityController.text.toInt() ?? 0,
+            rowNumber: rowNumber.value,
+          ),
+        );
+      }
     } else {
       showToast(message: 'Name and MRP should not be empty');
     }
@@ -162,9 +183,17 @@ class AddPurchaseItemController extends GetxController {
           nameController.text = selectedProductItem.value?.name ?? '';
           packagingController.text = selectedProductItem.value?.packing ?? '';
           mrpController.text = selectedProductItem.value?.mrp.toString() ?? '';
+          quantityFocusNode.requestFocus();
         } else {}
         isLoading.value = false;
       },
     );
+  }
+
+  @override
+  void dispose() {
+    quantityFocusNode.dispose();
+    nameFocusNode.dispose();
+    super.dispose();
   }
 }

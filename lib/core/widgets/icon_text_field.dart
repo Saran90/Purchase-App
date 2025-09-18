@@ -9,6 +9,7 @@ class IconTextField extends StatefulWidget {
     required this.controller,
     required this.whiteBackground,
     this.icon,
+    this.focusNode,
     this.suffixIcon,
     this.label,
     this.formatters,
@@ -31,6 +32,7 @@ class IconTextField extends StatefulWidget {
   final Color textColor;
   final TextInputType textInputType;
   final bool whiteBackground;
+  final FocusNode? focusNode;
 
   @override
   State<IconTextField> createState() => _IconTextFieldState();
@@ -89,6 +91,7 @@ class _IconTextFieldState extends State<IconTextField> {
                 child:
                     widget.isMultiLine
                         ? TextFormField(
+                      focusNode: widget.focusNode,
                           enabled: widget.isEnabled,
                           cursorColor:
                               widget.whiteBackground
@@ -124,6 +127,7 @@ class _IconTextFieldState extends State<IconTextField> {
                           ),
                         )
                         : TextFormField(
+                      focusNode: widget.focusNode,
                       enabled: widget.isEnabled,
                           cursorColor:
                               widget.whiteBackground

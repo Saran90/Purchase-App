@@ -10,6 +10,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
     required this.getSuggestions,
     this.selectedValue,
     this.label,
+    this.focusNode,
     this.textColor = Colors.white,
   });
 
@@ -17,6 +18,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
   final TextEditingController controller;
   final Color textColor;
   final T? selectedValue;
+  final FocusNode? focusNode;
   final String? label;
   final Function(T) onSelected;
   final Function(String) getSuggestions;
@@ -31,6 +33,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
         TypeAheadField<T>(
           hideOnLoading: true,
           controller: controller,
+          focusNode: focusNode,
           suggestionsCallback: (search) => getSuggestions(search),
           builder: (context, controller, focusNode) {
             return Container(

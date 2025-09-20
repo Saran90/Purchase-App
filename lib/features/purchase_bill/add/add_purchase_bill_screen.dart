@@ -19,9 +19,19 @@ class AddPurchaseBillScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _controller.onAddClicked,
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: _controller.onAddNewClicked,
+            child: Center(child: Text('Add New', textAlign: TextAlign.center)),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _controller.onAddClicked,
+            child: Icon(Icons.add),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(

@@ -4,9 +4,11 @@ class PurchaseItem {
   String name;
   String packaging;
   String barcode;
+  String hsnCode;
   double price;
   int quantity;
   int freeQuantity;
+  double taxPercentage;
 
   PurchaseItem({
     required this.id,
@@ -17,5 +19,7 @@ class PurchaseItem {
     required this.price,
     required this.freeQuantity,
     required this.quantity,
+    required this.hsnCode,
+    required this.taxPercentage,
   });
 }

@@ -3,13 +3,27 @@ class Items {
   num? productId;
   String? productName;
   String? packing;
+  String? barcode;
+  String? hsnCode;
   num? mrp;
   num? quantity;
   num? freeQuantity;
   num? rowNumber;
+  num? taxPercentage;
 
-  Items(
-      {this.purchaseDetailId, this.productId, this.productName, this.mrp, this.packing, this.quantity, this.freeQuantity, this.rowNumber});
+  Items({
+    this.purchaseDetailId,
+    this.productId,
+    this.productName,
+    this.mrp,
+    this.packing,
+    this.quantity,
+    this.freeQuantity,
+    this.rowNumber,
+    this.taxPercentage,
+    this.hsnCode,
+    this.barcode,
+  });
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -20,11 +34,14 @@ class Items {
     map["quantity"] = quantity;
     map["freeQuantity"] = freeQuantity;
     map["rowNumber"] = rowNumber;
-    map["packing"] = packing;
+    map["Packing"] = packing;
+    map["BarCode"] = barcode;
+    map["HsnCode"] = hsnCode;
+    map["TaxPer"] = taxPercentage;
     return map;
   }
 
-  Items.fromJson(dynamic json){
+  Items.fromJson(dynamic json) {
     purchaseDetailId = json["purchaseDetailId"];
     productId = json["productId"];
     productName = json["productName"];
@@ -32,7 +49,10 @@ class Items {
     quantity = json["quantity"];
     freeQuantity = json["freeQuantity"];
     rowNumber = json["rowNumber"];
-    packing = json["packing"];
+    packing = json["Packing"];
+    barcode = json["BarCode"];
+    hsnCode = json["HsnCode"];
+    taxPercentage = json["TaxPer"];
   }
 }
 
@@ -49,8 +69,19 @@ class PurchaseResponse {
   num? userId;
   List<Items>? itemsList;
 
-  PurchaseResponse(
-      {this.purchaseId, this.purchaseNo, this.purchaseDate, this.invoiceNo, this.invoiceDate, this.supplierId, this.supplierName, this.isImported, this.billAmount, this.userId, this.itemsList});
+  PurchaseResponse({
+    this.purchaseId,
+    this.purchaseNo,
+    this.purchaseDate,
+    this.invoiceNo,
+    this.invoiceDate,
+    this.supplierId,
+    this.supplierName,
+    this.isImported,
+    this.billAmount,
+    this.userId,
+    this.itemsList,
+  });
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -70,7 +101,7 @@ class PurchaseResponse {
     return map;
   }
 
-  PurchaseResponse.fromJson(dynamic json){
+  PurchaseResponse.fromJson(dynamic json) {
     purchaseId = json["purchaseId"];
     purchaseNo = json["purchaseNo"];
     purchaseDate = json["purchaseDate"];

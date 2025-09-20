@@ -107,7 +107,16 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onAddClicked() async {
-    var item = await Get.toNamed(addPurchaseItemRoute) as PurchaseItem?;
+    var item =
+        await Get.toNamed(addPurchaseItemRoute, arguments: [null, false])
+            as PurchaseItem?;
+    onItemAdded(item);
+  }
+
+  Future<void> onAddNewClicked() async {
+    var item =
+        await Get.toNamed(addPurchaseItemRoute, arguments: [null, true])
+            as PurchaseItem?;
     onItemAdded(item);
   }
 
@@ -162,7 +171,7 @@ class AddPurchaseBillController extends GetxController {
     if (selectedSupplier.value != null &&
         invoiceNumberController.text.isNotEmpty &&
         amountController.text.isNotEmpty) {
-      if(items.isNotEmpty) {
+      if (items.isNotEmpty) {
         AddPurchaseRequest addPurchaseRequest = AddPurchaseRequest(
           invoiceNo: invoiceNumberController.value.text,
           billAmount: amountController.value.text.toDouble() ?? 0,
@@ -174,38 +183,41 @@ class AddPurchaseBillController extends GetxController {
           userId: userId.value,
           supplierName: selectedSupplier.value?.name,
           itemsList:
-          items
-              .map(
-                (element) =>
-                Items(
-                  rowNumber: element.rowNumber,
-                  quantity: element.quantity,
-                  freeQuantity: element.freeQuantity,
-                  mrp: element.price,
-                  productId: element.id,
-                  productName: element.name,
-                  purchaseDetailId: 0,
-                  packing: element.packaging,
-                ),
-          )
-              .toList(),
+              items
+                  .map(
+                    (element) => Items(
+                      rowNumber: element.rowNumber,
+                      quantity: element.quantity,
+                      freeQuantity: element.freeQuantity,
+                      mrp: element.price,
+                      productId: element.id,
+                      productName: element.name,
+                      purchaseDetailId: 0,
+                      packing: element.packaging,
+                      taxPercentage: element.taxPercentage,
+                      hsnCode: element.hsnCode,
+                      barcode: element.barcode,
+                    ),
+                  )
+                  .toList(),
         );
         var result = await purchaseApi.addPurchase(addPurchaseRequest);
         result.fold(
-              (l) {
+          (l) {
             if (l is APIFailure) {
               ErrorResponse? errorResponse = l.error;
               showToast(message: errorResponse?.message ?? apiFailureMessage);
             } else if (l is ServerFailure) {
               showToast(message: l.message ?? serverFailureMessage);
-            } else if (l is AuthFailure) {} else if (l is NetworkFailure) {
+            } else if (l is AuthFailure) {
+            } else if (l is NetworkFailure) {
               showToast(message: networkFailureMessage);
             } else {
               showToast(message: unknownFailureMessage);
             }
             isLoading.value = false;
           },
-              (r) {
+          (r) {
             if (r != null) {
               purchaseId.value = r.purchaseId ?? 0;
               showToast(
@@ -279,6 +291,8 @@ class AddPurchaseBillController extends GetxController {
                           price: e.mrp?.toDouble() ?? 0,
                           freeQuantity: e.freeQuantity?.toInt() ?? 0,
                           quantity: e.quantity?.toInt() ?? 0,
+                          hsnCode: e.hsnCode ?? '',
+                          taxPercentage: e.taxPercentage?.toDouble() ?? 0,
                         ),
                       )
                       .toList() ??
@@ -417,7 +431,10 @@ class AddPurchaseBillController extends GetxController {
 
   Future<void> onItemClicked(PurchaseItem purchaseItem) async {
     var item =
-        await Get.toNamed(addPurchaseItemRoute, arguments: purchaseItem)
+        await Get.toNamed(
+              addPurchaseItemRoute,
+              arguments: [purchaseItem, false],
+            )
             as PurchaseItem?;
     onItemUpdated(item);
   }

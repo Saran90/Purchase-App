@@ -3,28 +3,45 @@ class Items {
   num? productId;
   String? productName;
   String? packing;
+  String? barcode;
+  String? hsnCode;
   num? mrp;
   num? quantity;
   num? freeQuantity;
   num? rowNumber;
+  num? taxPercentage;
 
-  Items(
-      {this.purchaseDetailId, this.packing, this.productId, this.productName, this.mrp, this.quantity, this.freeQuantity, this.rowNumber});
+  Items({
+    this.purchaseDetailId,
+    this.barcode,
+    this.hsnCode,
+    this.taxPercentage,
+    this.packing,
+    this.productId,
+    this.productName,
+    this.mrp,
+    this.quantity,
+    this.freeQuantity,
+    this.rowNumber,
+  });
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map["purchaseDetailId"] = purchaseDetailId;
     map["productId"] = productId;
-    map["packing"] = packing;
+    map["Packing"] = packing;
     map["productName"] = productName;
     map["mrp"] = mrp;
     map["quantity"] = quantity;
     map["freeQuantity"] = freeQuantity;
     map["rowNumber"] = rowNumber;
+    map["BarCode"] = barcode;
+    map["HsnCode"] = hsnCode;
+    map["TaxPer"] = taxPercentage;
     return map;
   }
 
-  Items.fromJson(dynamic json){
+  Items.fromJson(dynamic json) {
     purchaseDetailId = json["purchaseDetailId"];
     productId = json["productId"];
     productName = json["productName"];
@@ -33,6 +50,9 @@ class Items {
     quantity = json["quantity"];
     freeQuantity = json["freeQuantity"];
     rowNumber = json["rowNumber"];
+    barcode = json["BarCode"];
+    hsnCode = json["HsnCode"];
+    taxPercentage = json["TaxPer"];
   }
 }
 
@@ -48,8 +68,18 @@ class AddPurchaseRequest {
   num? userId;
   List<Items>? itemsList;
 
-  AddPurchaseRequest(
-      {this.purchaseId, this.purchaseNo, this.purchaseDate, this.invoiceNo, this.invoiceDate, this.supplierId, this.supplierName, this.billAmount, this.userId, this.itemsList});
+  AddPurchaseRequest({
+    this.purchaseId,
+    this.purchaseNo,
+    this.purchaseDate,
+    this.invoiceNo,
+    this.invoiceDate,
+    this.supplierId,
+    this.supplierName,
+    this.billAmount,
+    this.userId,
+    this.itemsList,
+  });
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -68,7 +98,7 @@ class AddPurchaseRequest {
     return map;
   }
 
-  AddPurchaseRequest.fromJson(dynamic json){
+  AddPurchaseRequest.fromJson(dynamic json) {
     purchaseId = json["purchaseId"];
     purchaseNo = json["purchaseNo"];
     purchaseDate = json["purchaseDate"];

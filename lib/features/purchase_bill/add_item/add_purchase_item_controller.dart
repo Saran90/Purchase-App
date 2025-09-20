@@ -17,6 +17,8 @@ import '../../../utils/messages.dart';
 
 class AddPurchaseItemController extends GetxController {
   final barcodeController = TextEditingController();
+  final hsnCodeController = TextEditingController();
+  final taxPercentageController = TextEditingController();
   final nameController = TextEditingController();
   final packagingController = TextEditingController();
   final mrpController = TextEditingController();
@@ -32,13 +34,18 @@ class AddPurchaseItemController extends GetxController {
   RxInt rowNumber = 0.obs;
   late FocusNode quantityFocusNode;
   late FocusNode nameFocusNode;
+  RxBool isNewProduct = false.obs;
 
   @override
   void onInit() {
     print('onInit');
     quantityFocusNode = FocusNode();
     nameFocusNode = FocusNode();
-    PurchaseItem? item = Get.arguments as PurchaseItem?;
+    var value = Get.arguments as List<dynamic>;
+    if (value[1] != null) {
+      isNewProduct.value = value[1] as bool;
+    }
+    PurchaseItem? item = value[0] as PurchaseItem?;
     if (item != null) {
       nameController.text = item.name;
       packagingController.text = item.packaging;
@@ -48,6 +55,9 @@ class AddPurchaseItemController extends GetxController {
       freeQuantityController.text = item.freeQuantity.toString();
       purchaseId.value = item.id;
       rowNumber.value = item.rowNumber;
+      hsnCodeController.text = item.hsnCode;
+      taxPercentageController.text = item.taxPercentage.toString();
+
       Future.delayed(
         Duration(milliseconds: 200),
         () => Get.focusScope?.unfocus(),
@@ -132,18 +142,27 @@ class AddPurchaseItemController extends GetxController {
           message: 'Both Quantity and free quantity cannot be empty or 0',
         );
       } else {
-        Get.back(
-          result: PurchaseItem(
-            id: purchaseId.value,
-            name: nameController.text,
-            packaging: packagingController.text,
-            barcode: barcodeController.text,
-            price: mrpController.text.toDouble() ?? 0,
-            freeQuantity: freeQuantityController.text.toInt() ?? 0,
-            quantity: quantityController.text.toInt() ?? 0,
-            rowNumber: rowNumber.value,
-          ),
-        );
+        if (isNewProduct.value &&
+            ((taxPercentageController.text.isEmpty ||
+                    taxPercentageController.text == '0') ||
+                (hsnCodeController.text.isEmpty))) {
+          showToast(message: 'Tax percentage and HSN code should not be empty');
+        } else {
+          Get.back(
+            result: PurchaseItem(
+              id: purchaseId.value,
+              name: nameController.text,
+              packaging: packagingController.text,
+              barcode: barcodeController.text,
+              price: mrpController.text.toDouble() ?? 0,
+              freeQuantity: freeQuantityController.text.toInt() ?? 0,
+              quantity: quantityController.text.toInt() ?? 0,
+              rowNumber: rowNumber.value,
+              hsnCode: hsnCodeController.text,
+              taxPercentage: double.tryParse(taxPercentageController.text) ?? 0,
+            ),
+          );
+        }
       }
     } else {
       showToast(message: 'Name and MRP should not be empty');

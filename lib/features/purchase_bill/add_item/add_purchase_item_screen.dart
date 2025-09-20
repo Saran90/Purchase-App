@@ -29,7 +29,10 @@ class AddPurchaseItemScreen extends StatelessWidget {
         ),
         child: SafeArea(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
               child: SingleChildScrollView(
@@ -51,16 +54,19 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 20),
-                          Obx(() => Text(
-                            _controller.rowNumber.value == 0
-                                ? 'Add item'
-                                : 'Edit item',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: textColor,
-                            ),
-                          ),),
+                          Obx(
+                                () =>
+                                Text(
+                                  _controller.rowNumber.value == 0
+                                      ? 'Add item'
+                                      : 'Edit item',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: textColor,
+                                  ),
+                                ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -78,15 +84,17 @@ class AddPurchaseItemScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       Obx(
-                        () => AutocompleteTextField<ProductItem>(
-                          controller: _controller.nameController,
-                          getSuggestions: _controller.getProductSuggestions,
-                          onSelected: _controller.onProductItemSelected,
-                          suggestions: _controller.productItems,
-                          selectedValue: _controller.selectedProductItem.value,
-                          label: 'Name',
-                          focusNode: _controller.nameFocusNode,
-                        ),
+                            () =>
+                            AutocompleteTextField<ProductItem>(
+                              controller: _controller.nameController,
+                              getSuggestions: _controller.getProductSuggestions,
+                              onSelected: _controller.onProductItemSelected,
+                              suggestions: _controller.productItems,
+                              selectedValue: _controller.selectedProductItem
+                                  .value,
+                              label: 'Name',
+                              focusNode: _controller.nameFocusNode,
+                            ),
                       ),
                       const SizedBox(height: 20),
                       IconTextField(
@@ -160,9 +168,44 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          Expanded(child: SizedBox()),
+                          Expanded(
+                            child:
+                            _controller.isNewProduct.value
+                                ? IconTextField(
+                              controller:
+                              _controller.taxPercentageController,
+                              hint: 'Enter tax %',
+                              textInputType:
+                              TextInputType.numberWithOptions(
+                                signed: false,
+                                decimal: true,
+                              ),
+                              whiteBackground: false,
+                              label: 'Tax Percentage',
+                              formatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'(^\-?\d*\.?\d*)'),
+                                ),
+                              ],
+                            )
+                                : SizedBox(),
+                          ),
                         ],
                       ),
+                      Visibility(
+                          visible: _controller.isNewProduct.value,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              IconTextField(
+                                controller: _controller.hsnCodeController,
+                                hint: 'Enter hsn code',
+                                textInputType: TextInputType.text,
+                                whiteBackground: false,
+                                label: 'HSN Code',
+                              ),
+                            ],
+                          )),
                       const SizedBox(height: 40),
                       AppButton(
                         label: 'Add',

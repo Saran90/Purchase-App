@@ -35,10 +35,16 @@ class AddPurchaseItemController extends GetxController {
   late FocusNode quantityFocusNode;
   late FocusNode nameFocusNode;
   RxBool isNewProduct = false.obs;
+  RxList<double> taxSlabs = RxList<double>();
+  Rx<double?> selectedTaxSlab = Rx<double?>(null);
+  RxBool isEdit = RxBool(false);
+  Rx<PurchaseItem?> purchaseItem = Rx<PurchaseItem?>(null);
 
   @override
   void onInit() {
     print('onInit');
+    getTaxSlabs();
+    isEdit.value = false;
     quantityFocusNode = FocusNode();
     nameFocusNode = FocusNode();
     var value = Get.arguments as List<dynamic>;
@@ -47,6 +53,8 @@ class AddPurchaseItemController extends GetxController {
     }
     PurchaseItem? item = value[0] as PurchaseItem?;
     if (item != null) {
+      purchaseItem.value = item;
+      isEdit.value = true;
       nameController.text = item.name;
       packagingController.text = item.packaging;
       mrpController.text = item.price.toString();
@@ -145,31 +153,25 @@ class AddPurchaseItemController extends GetxController {
             message: 'Both Quantity and free quantity cannot be empty or 0',
           );
         } else {
-          if(isNewProduct.value) {
-            if (taxPercentageController.text.isEmpty ||
-                taxPercentageController.text == '0') {
-              showToast(message: 'Tax percentage should not be empty');
+          if (isNewProduct.value) {
+            if (hsnCodeController.text.isEmpty) {
+              showToast(message: 'HSN code should not be empty');
             } else {
-              if (hsnCodeController.text.isEmpty) {
-                showToast(message: 'HSN code should not be empty');
-              } else {
-                Get.back(
-                  result: PurchaseItem(
-                    id: purchaseId.value,
-                    name: nameController.text,
-                    packaging: packagingController.text,
-                    barcode: barcodeController.text,
-                    price: mrpController.text.toDouble() ?? 0,
-                    freeQuantity: freeQuantityController.text.toInt() ?? 0,
-                    quantity: quantityController.text.toInt() ?? 0,
-                    rowNumber: rowNumber.value,
-                    hsnCode: hsnCodeController.text,
-                    taxPercentage:
-                    double.tryParse(taxPercentageController.text) ?? 0,
-                    isNew: isNewProduct.value,
-                  ),
-                );
-              }
+              Get.back(
+                result: PurchaseItem(
+                  id: purchaseId.value,
+                  name: nameController.text,
+                  packaging: packagingController.text,
+                  barcode: barcodeController.text,
+                  price: mrpController.text.toDouble() ?? 0,
+                  freeQuantity: freeQuantityController.text.toInt() ?? 0,
+                  quantity: quantityController.text.toInt() ?? 0,
+                  rowNumber: rowNumber.value,
+                  hsnCode: hsnCodeController.text,
+                  taxPercentage: selectedTaxSlab.value ?? 0,
+                  isNew: isNewProduct.value,
+                ),
+              );
             }
           } else {
             Get.back(
@@ -184,7 +186,7 @@ class AddPurchaseItemController extends GetxController {
                 rowNumber: rowNumber.value,
                 hsnCode: hsnCodeController.text,
                 taxPercentage:
-                double.tryParse(taxPercentageController.text) ?? 0,
+                    double.tryParse(taxPercentageController.text) ?? 0,
                 isNew: isNewProduct.value,
               ),
             );
@@ -239,10 +241,44 @@ class AddPurchaseItemController extends GetxController {
     );
   }
 
+  Future<void> getTaxSlabs() async {
+    var result = await purchaseApi.geTaxSlabs();
+    result.fold(
+      (l) {
+        if (l is APIFailure) {
+          ErrorResponse? errorResponse = l.error;
+          showToast(message: errorResponse?.message ?? apiFailureMessage);
+        } else if (l is ServerFailure) {
+          showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
+        } else if (l is NetworkFailure) {
+          showToast(message: networkFailureMessage);
+        } else {
+          showToast(message: unknownFailureMessage);
+        }
+        isLoading.value = false;
+      },
+      (r) {
+        taxSlabs.value =
+            r?.dataList?.map((e) => e.taxPer?.toDouble() ?? 0).toList() ?? [];
+        if (purchaseItem.value != null) {
+          selectedTaxSlab.value = purchaseItem.value?.taxPercentage;
+        } else {
+          selectedTaxSlab.value = taxSlabs.first;
+        }
+        isLoading.value = false;
+      },
+    );
+  }
+
   @override
   void dispose() {
     quantityFocusNode.dispose();
     nameFocusNode.dispose();
     super.dispose();
+  }
+
+  onTaxSlabSelected(double? value) {
+    selectedTaxSlab.value = value;
   }
 }

@@ -7,3 +7,4 @@ const String getProductByCodeUrl = '/api/products/GetByBarCode';
 const String getPurchasesUrl = '/api/purchase';
 const String productsUrl = '/api/products';
 const String suppliersUrl = '/api/suppliers';
+const String taxUrl = '/api/tax';

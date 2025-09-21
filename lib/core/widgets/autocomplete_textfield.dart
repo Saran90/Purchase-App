@@ -60,14 +60,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
                   (controller.text.isNotEmpty &&
                           controller.text.length > 2 &&
                           suggestions.isEmpty)
-                      ? Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          'No items found!',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      )
+                      ? SizedBox()
                       : SizedBox(),
           itemBuilder: (context, value) {
             return ListTile(title: Text(value.toString()));

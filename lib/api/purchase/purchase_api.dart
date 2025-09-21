@@ -11,6 +11,7 @@ import 'package:purchase_app/api/purchase/models/get_products_response.dart';
 import 'package:purchase_app/api/purchase/models/get_purchase_bills_response.dart';
 import 'package:purchase_app/api/purchase/models/get_suppliers_response.dart';
 import 'package:purchase_app/api/purchase/models/purchase_response.dart';
+import 'package:purchase_app/api/purchase/models/tax_response.dart';
 
 import '../../data/error/failures.dart';
 import '../endpoints.dart';
@@ -226,6 +227,31 @@ class PurchaseApi extends ApiClient {
       debugPrint('Purchase Bills Call: $exception');
       if (exception is DioException) {
         debugPrint('Purchase Bills Call Exception: ${exception.message}');
+        ErrorResponse? errorResponse = ErrorResponse.fromJson(
+          exception.response?.data,
+        );
+        return Left(APIFailure<ErrorResponse>(error: errorResponse));
+      }
+      return Left(ServerFailure(message: exception.toString()));
+    }
+  }
+
+  Future<Either<Failure, TaxResponse?>> geTaxSlabs() async {
+    try {
+      var response = await get(taxUrl);
+      if (response.isOk) {
+        TaxResponse taxResponse = TaxResponse.fromJson(response.body);
+        return Right(taxResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
+      } else {
+        ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
+        return Left(APIFailure<ErrorResponse>(error: errorResponse));
+      }
+    } catch (exception) {
+      debugPrint('Tax Slabs Call: $exception');
+      if (exception is DioException) {
+        debugPrint('Tax Slabs Call Exception: ${exception.message}');
         ErrorResponse? errorResponse = ErrorResponse.fromJson(
           exception.response?.data,
         );

@@ -324,7 +324,10 @@ class AddPurchaseBillController extends GetxController {
       () {
         Get.back();
         items.removeWhere(
-          (element) => (element.id == item.id) && (element.price == item.price),
+          (element) =>
+              (element.id == item.id) &&
+              (element.price == item.price) &&
+              (element.name == item.name),
         );
       },
       () {

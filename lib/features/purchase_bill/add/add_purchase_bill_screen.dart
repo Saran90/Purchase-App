@@ -19,20 +19,6 @@ class AddPurchaseBillScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: _controller.onAddNewClicked,
-            child: Center(child: Text('Add New', textAlign: TextAlign.center)),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: _controller.onAddClicked,
-            child: Icon(Icons.add),
-          ),
-        ],
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -243,38 +229,66 @@ class AddPurchaseBillScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 20),
-                          Obx(
-                            () =>
-                                _controller.items.isEmpty
-                                    ? Center(
-                                      child: Text(
-                                        'No items added',
-                                        style: TextStyle(color: textColor),
-                                      ),
-                                    )
-                                    : ListView.builder(
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      itemCount: _controller.items.length,
-                                      itemBuilder:
-                                          (context, index) => InkWell(
-                                            onTap:
-                                                () => _controller.onItemClicked(
-                                                  _controller.items[index],
-                                                ),
-                                            child: PurchaseItemWidget(
-                                              purchaseItem:
-                                                  _controller.items[index],
-                                              onDeleteClicked:
-                                                  () => _controller
-                                                      .onDeleteProductClicked(
-                                                        _controller
-                                                            .items[index],
-                                                      ),
-                                            ),
-                                          ),
-                                    ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: AppButton(
+                                  label: 'Add item',
+                                  onSubmit: _controller.onAddClicked,
+                                  startColor: appColorGradient1,
+                                  endColor: appColorGradient2,
+                                ),
+                              ),
+                              const SizedBox(width: 20,),
+                              Expanded(
+                                child: AppButton(
+                                  label: 'Add new item',
+                                  onSubmit: _controller.onAddNewClicked,
+                                  startColor: appColorGradient3,
+                                  endColor: appColorGradient4,
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 20),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: 100
+                            ),
+                            child: Obx(
+                                  () =>
+                              _controller.items.isEmpty
+                                  ? Center(
+                                child: Text(
+                                  'No items added',
+                                  style: TextStyle(color: textColor),
+                                ),
+                              )
+                                  : ListView.builder(
+                                primary: false,
+                                shrinkWrap: true,
+                                itemCount: _controller.items.length,
+                                itemBuilder:
+                                    (context, index) => InkWell(
+                                  onTap:
+                                      () => _controller.onItemClicked(
+                                    _controller.items[index],
+                                  ),
+                                  child: PurchaseItemWidget(
+                                    purchaseItem:
+                                    _controller.items[index],
+                                    onDeleteClicked:
+                                        () => _controller
+                                        .onDeleteProductClicked(
+                                      _controller
+                                          .items[index],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),

@@ -9,6 +9,7 @@ class PurchaseItem {
   int quantity;
   int freeQuantity;
   double taxPercentage;
+  bool isNew;
 
   PurchaseItem({
     required this.id,
@@ -21,5 +22,6 @@ class PurchaseItem {
     required this.quantity,
     required this.hsnCode,
     required this.taxPercentage,
+    this.isNew = false
   });
 }

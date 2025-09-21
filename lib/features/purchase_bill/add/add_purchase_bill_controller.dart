@@ -168,70 +168,78 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onSaveClicked() async {
-    if (selectedSupplier.value != null &&
-        invoiceNumberController.text.isNotEmpty &&
-        amountController.text.isNotEmpty) {
-      if (items.isNotEmpty) {
-        AddPurchaseRequest addPurchaseRequest = AddPurchaseRequest(
-          invoiceNo: invoiceNumberController.value.text,
-          billAmount: amountController.value.text.toDouble() ?? 0,
-          invoiceDate: selectedInvoiceDate.value.toYYYYMMDD(),
-          supplierId: selectedSupplier.value?.id ?? 0,
-          purchaseDate: selectedPurchaseDate.value.toYYYYMMDD(),
-          purchaseId: purchaseId.value,
-          purchaseNo: purchaseNo.value,
-          userId: userId.value,
-          supplierName: selectedSupplier.value?.name,
-          itemsList:
-              items
-                  .map(
-                    (element) => Items(
-                      rowNumber: element.rowNumber,
-                      quantity: element.quantity,
-                      freeQuantity: element.freeQuantity,
-                      mrp: element.price,
-                      productId: element.id,
-                      productName: element.name,
-                      purchaseDetailId: 0,
-                      packing: element.packaging,
-                      taxPercentage: element.taxPercentage,
-                      hsnCode: element.hsnCode,
-                      barcode: element.barcode,
-                    ),
-                  )
-                  .toList(),
-        );
-        var result = await purchaseApi.addPurchase(addPurchaseRequest);
-        result.fold(
-          (l) {
-            if (l is APIFailure) {
-              ErrorResponse? errorResponse = l.error;
-              showToast(message: errorResponse?.message ?? apiFailureMessage);
-            } else if (l is ServerFailure) {
-              showToast(message: l.message ?? serverFailureMessage);
-            } else if (l is AuthFailure) {
-            } else if (l is NetworkFailure) {
-              showToast(message: networkFailureMessage);
-            } else {
-              showToast(message: unknownFailureMessage);
-            }
-            isLoading.value = false;
-          },
-          (r) {
-            if (r != null) {
-              purchaseId.value = r.purchaseId ?? 0;
-              showToast(
-                message: 'Purchase updated',
-                type: ToastificationType.success,
-              );
-              Get.back();
-            } else {
-              showToast(message: networkFailureMessage);
-            }
-          },
-        );
+    if (selectedSupplier.value != null) {
+      if (invoiceNumberController.text.isNotEmpty) {
+        if (amountController.text.isNotEmpty) {
+          if (items.isNotEmpty) {
+            AddPurchaseRequest addPurchaseRequest = AddPurchaseRequest(
+              invoiceNo: invoiceNumberController.value.text,
+              billAmount: amountController.value.text.toDouble() ?? 0,
+              invoiceDate: selectedInvoiceDate.value.toYYYYMMDD(),
+              supplierId: selectedSupplier.value?.id ?? 0,
+              purchaseDate: selectedPurchaseDate.value.toYYYYMMDD(),
+              purchaseId: purchaseId.value,
+              purchaseNo: purchaseNo.value,
+              userId: userId.value,
+              supplierName: selectedSupplier.value?.name,
+              itemsList:
+                  items
+                      .map(
+                        (element) => Items(
+                          rowNumber: element.rowNumber,
+                          quantity: element.quantity,
+                          freeQuantity: element.freeQuantity,
+                          mrp: element.price,
+                          productId: element.id,
+                          productName: element.name,
+                          purchaseDetailId: 0,
+                          packing: element.packaging,
+                          taxPercentage: element.taxPercentage,
+                          hsnCode: element.hsnCode,
+                          barcode: element.barcode,
+                        ),
+                      )
+                      .toList(),
+            );
+            var result = await purchaseApi.addPurchase(addPurchaseRequest);
+            result.fold(
+              (l) {
+                if (l is APIFailure) {
+                  ErrorResponse? errorResponse = l.error;
+                  showToast(
+                    message: errorResponse?.message ?? apiFailureMessage,
+                  );
+                } else if (l is ServerFailure) {
+                  showToast(message: l.message ?? serverFailureMessage);
+                } else if (l is AuthFailure) {
+                } else if (l is NetworkFailure) {
+                  showToast(message: networkFailureMessage);
+                } else {
+                  showToast(message: unknownFailureMessage);
+                }
+                isLoading.value = false;
+              },
+              (r) {
+                if (r != null) {
+                  purchaseId.value = r.purchaseId ?? 0;
+                  showToast(
+                    message: 'Purchase updated',
+                    type: ToastificationType.success,
+                  );
+                  Get.back();
+                } else {
+                  showToast(message: networkFailureMessage);
+                }
+              },
+            );
+          } else {
+            showToast(message: 'Please add items');
+          }
+        } else {
+          showToast(message: 'Please provide bill amount');
+        }
       } else {
-        showToast(message: 'Please add items');
+        showToast(message: 'Please provide invoice number');
       }
     } else {
       showToast(message: 'Please provide required fields');
@@ -326,7 +334,11 @@ class AddPurchaseBillController extends GetxController {
   }
 
   bool _isAlreadyAdded(PurchaseItem item) {
-    return items.any((element) => element.id == item.id);
+    return items.any(
+      (element) =>
+          (element.id == item.id) &&
+          (element.name.toLowerCase() == item.name.toLowerCase()),
+    );
   }
 
   bool _hasDifferentMrp(PurchaseItem item) {

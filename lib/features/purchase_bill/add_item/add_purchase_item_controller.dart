@@ -57,6 +57,7 @@ class AddPurchaseItemController extends GetxController {
       rowNumber.value = item.rowNumber;
       hsnCodeController.text = item.hsnCode;
       taxPercentageController.text = item.taxPercentage.toString();
+      isNewProduct.value = item.isNew;
 
       Future.delayed(
         Duration(milliseconds: 200),
@@ -134,38 +135,66 @@ class AddPurchaseItemController extends GetxController {
   }
 
   void onSaved() {
-    if (nameController.text.isNotEmpty && mrpController.text.isNotEmpty) {
-      if ((quantityController.text.isEmpty || quantityController.text == '0') &&
-          (freeQuantityController.text.isEmpty ||
-              freeQuantityController.text == '0')) {
-        showToast(
-          message: 'Both Quantity and free quantity cannot be empty or 0',
-        );
-      } else {
-        if (isNewProduct.value &&
-            ((taxPercentageController.text.isEmpty ||
-                    taxPercentageController.text == '0') ||
-                (hsnCodeController.text.isEmpty))) {
-          showToast(message: 'Tax percentage and HSN code should not be empty');
-        } else {
-          Get.back(
-            result: PurchaseItem(
-              id: purchaseId.value,
-              name: nameController.text,
-              packaging: packagingController.text,
-              barcode: barcodeController.text,
-              price: mrpController.text.toDouble() ?? 0,
-              freeQuantity: freeQuantityController.text.toInt() ?? 0,
-              quantity: quantityController.text.toInt() ?? 0,
-              rowNumber: rowNumber.value,
-              hsnCode: hsnCodeController.text,
-              taxPercentage: double.tryParse(taxPercentageController.text) ?? 0,
-            ),
+    if (nameController.text.isNotEmpty) {
+      if (mrpController.text.isNotEmpty) {
+        if ((quantityController.text.isEmpty ||
+                quantityController.text == '0') &&
+            (freeQuantityController.text.isEmpty ||
+                freeQuantityController.text == '0')) {
+          showToast(
+            message: 'Both Quantity and free quantity cannot be empty or 0',
           );
+        } else {
+          if(isNewProduct.value) {
+            if (taxPercentageController.text.isEmpty ||
+                taxPercentageController.text == '0') {
+              showToast(message: 'Tax percentage should not be empty');
+            } else {
+              if (hsnCodeController.text.isEmpty) {
+                showToast(message: 'HSN code should not be empty');
+              } else {
+                Get.back(
+                  result: PurchaseItem(
+                    id: purchaseId.value,
+                    name: nameController.text,
+                    packaging: packagingController.text,
+                    barcode: barcodeController.text,
+                    price: mrpController.text.toDouble() ?? 0,
+                    freeQuantity: freeQuantityController.text.toInt() ?? 0,
+                    quantity: quantityController.text.toInt() ?? 0,
+                    rowNumber: rowNumber.value,
+                    hsnCode: hsnCodeController.text,
+                    taxPercentage:
+                    double.tryParse(taxPercentageController.text) ?? 0,
+                    isNew: isNewProduct.value,
+                  ),
+                );
+              }
+            }
+          } else {
+            Get.back(
+              result: PurchaseItem(
+                id: purchaseId.value,
+                name: nameController.text,
+                packaging: packagingController.text,
+                barcode: barcodeController.text,
+                price: mrpController.text.toDouble() ?? 0,
+                freeQuantity: freeQuantityController.text.toInt() ?? 0,
+                quantity: quantityController.text.toInt() ?? 0,
+                rowNumber: rowNumber.value,
+                hsnCode: hsnCodeController.text,
+                taxPercentage:
+                double.tryParse(taxPercentageController.text) ?? 0,
+                isNew: isNewProduct.value,
+              ),
+            );
+          }
         }
+      } else {
+        showToast(message: 'MRP should not be empty');
       }
     } else {
-      showToast(message: 'Name and MRP should not be empty');
+      showToast(message: 'Name should not be empty');
     }
   }
 

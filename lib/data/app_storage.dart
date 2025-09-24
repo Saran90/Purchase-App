@@ -18,6 +18,11 @@ class AppStorage {
     return accessToken;
   }
 
+  Future<void> setFirmName({required String firmName}) async {
+    await box.write(firmNameKey, firmName);
+  }
+
+
   Future<void> setLoginStatus({required bool status}) async {
     await box.write(isLoggedInKey, status);
   }
@@ -29,6 +34,11 @@ class AppStorage {
   String? getRefreshToken() {
     String? refreshToken = box.read(refreshTokenKey);
     return refreshToken;
+  }
+
+  String? getFirmName() {
+    String? firmName = box.read(firmNameKey);
+    return firmName;
   }
 
   Future<void> clear() async {

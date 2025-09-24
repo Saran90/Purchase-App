@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:purchase_app/api/purchase/models/delete_purchase_request.dart';
 import 'package:purchase_app/api/purchase/purchase_api.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_bill.dart';
+import 'package:purchase_app/main.dart';
 import 'package:purchase_app/utils/extensions.dart';
 import 'package:toastification/toastification.dart';
 
@@ -19,10 +20,12 @@ class PurchaseBillsController extends GetxController {
   Rx<DateTime?> startDate = Rx<DateTime?>(null);
   Rx<DateTime?> endDate = Rx<DateTime?>(null);
   RxInt supplierId = 150.obs;
+  RxString firmName = ''.obs;
   RxList<PurchaseBill> purchaseBills = RxList([]);
 
   @override
   void onInit() {
+    firmName.value = appStorage.getFirmName() ?? '';
     loadPurchaseBills();
     super.onInit();
   }
@@ -155,5 +158,36 @@ class PurchaseBillsController extends GetxController {
         );
       },
     );
+  }
+
+  void onMenuClicked(BuildContext context, int value) {
+    if (value == 0) {
+      showDialog(
+        context: Get.context!,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Logout"),
+            content: Text("Do you really want to logout?"),
+            actions: [
+              TextButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+              TextButton(
+                child: Text("Yes"),
+                onPressed: () {
+                  Get.back();
+                  appStorage.clear();
+                  appStorage.setLoginStatus(status: false);
+                  Get.offAllNamed(loginRoute);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

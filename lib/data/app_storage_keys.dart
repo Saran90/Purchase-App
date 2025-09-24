@@ -9,3 +9,4 @@ const usernameKey = 'username';
 const emailKey = 'email';
 const nameKey = 'name';
 const profilePicKey = 'profilePic';
+const firmNameKey = 'firmName';

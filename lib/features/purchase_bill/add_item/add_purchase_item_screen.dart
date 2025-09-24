@@ -186,22 +186,20 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             const SizedBox(width: 10),
                             Expanded(
                               child:
-                                  _controller.isNewProduct.value
-                                      ? Obx(
-                                        () => AppDropDown(
-                                          items: _controller.taxSlabs,
-                                          hint: 'Select',
-                                          label: 'Tax Percentage',
-                                          selectedValue:
-                                              _controller
-                                                  .selectedTaxSlab
-                                                  .value ??
-                                              0,
-                                          onValueSelected:
-                                              _controller.onTaxSlabSelected,
-                                        ),
-                                      )
-                                      : SizedBox(),
+                                  Obx(() => _controller.isNewProduct.value
+                                      ? AppDropDown(
+                                    items: _controller.taxSlabs,
+                                    hint: 'Select',
+                                    label: 'Tax Percentage',
+                                    selectedValue:
+                                    _controller
+                                        .selectedTaxSlab
+                                        .value ??
+                                        0,
+                                    onValueSelected:
+                                    _controller.onTaxSlabSelected,
+                                  )
+                                      : SizedBox(),),
                             ),
                           ],
                         ),

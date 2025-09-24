@@ -64,12 +64,19 @@ class AddPurchaseItemController extends GetxController {
       purchaseId.value = item.id;
       rowNumber.value = item.rowNumber;
       hsnCodeController.text = item.hsnCode;
+      selectedTaxSlab.value = item.taxPercentage;
+      print('Selected Tax: ${selectedTaxSlab.value}');
       taxPercentageController.text = item.taxPercentage.toString();
       isNewProduct.value = item.isNew;
+      if (item.id != 0) {
+        isNewProduct.value = false;
+      } else {
+        isNewProduct.value = true;
+      }
 
       Future.delayed(
         Duration(milliseconds: 200),
-        () => Get.focusScope?.unfocus(),
+            () => Get.focusScope?.unfocus(),
       );
     } else {
       Future.delayed(Duration(milliseconds: 500), () {
@@ -89,16 +96,17 @@ class AddPurchaseItemController extends GetxController {
         productItems.value =
             r.dataList
                 ?.map(
-                  (e) => ProductItem(
+                  (e) =>
+                  ProductItem(
                     id: e.productId?.toInt() ?? 0,
                     name: e.productName ?? '',
                     mrp: e.mrp?.toDouble() ?? 0,
                     barCode: e.barCode ?? '',
                     packing: e.packing ?? '',
                   ),
-                )
+            )
                 .toList() ??
-            [];
+                [];
         return productItems;
       } else {
         productItems.value = [];
@@ -146,7 +154,7 @@ class AddPurchaseItemController extends GetxController {
     if (nameController.text.isNotEmpty) {
       if (mrpController.text.isNotEmpty) {
         if ((quantityController.text.isEmpty ||
-                quantityController.text == '0') &&
+            quantityController.text == '0') &&
             (freeQuantityController.text.isEmpty ||
                 freeQuantityController.text == '0')) {
           showToast(
@@ -186,7 +194,7 @@ class AddPurchaseItemController extends GetxController {
                 rowNumber: rowNumber.value,
                 hsnCode: hsnCodeController.text,
                 taxPercentage:
-                    double.tryParse(taxPercentageController.text) ?? 0,
+                double.tryParse(taxPercentageController.text) ?? 0,
                 isNew: isNewProduct.value,
               ),
             );
@@ -208,21 +216,20 @@ class AddPurchaseItemController extends GetxController {
     isLoading.value = false;
     var result = await purchaseApi.getProductByBarcode(res);
     result.fold(
-      (l) {
+          (l) {
         if (l is APIFailure) {
           ErrorResponse? errorResponse = l.error;
           showToast(message: errorResponse?.message ?? apiFailureMessage);
         } else if (l is ServerFailure) {
           showToast(message: l.message ?? serverFailureMessage);
-        } else if (l is AuthFailure) {
-        } else if (l is NetworkFailure) {
+        } else if (l is AuthFailure) {} else if (l is NetworkFailure) {
           showToast(message: networkFailureMessage);
         } else {
           showToast(message: unknownFailureMessage);
         }
         isLoading.value = false;
       },
-      (r) {
+          (r) {
         if (r != null) {
           selectedProductItem.value = ProductItem(
             id: r.productId?.toInt() ?? 0,
@@ -244,21 +251,20 @@ class AddPurchaseItemController extends GetxController {
   Future<void> getTaxSlabs() async {
     var result = await purchaseApi.geTaxSlabs();
     result.fold(
-      (l) {
+          (l) {
         if (l is APIFailure) {
           ErrorResponse? errorResponse = l.error;
           showToast(message: errorResponse?.message ?? apiFailureMessage);
         } else if (l is ServerFailure) {
           showToast(message: l.message ?? serverFailureMessage);
-        } else if (l is AuthFailure) {
-        } else if (l is NetworkFailure) {
+        } else if (l is AuthFailure) {} else if (l is NetworkFailure) {
           showToast(message: networkFailureMessage);
         } else {
           showToast(message: unknownFailureMessage);
         }
         isLoading.value = false;
       },
-      (r) {
+          (r) {
         taxSlabs.value =
             r?.dataList?.map((e) => e.taxPer?.toDouble() ?? 0).toList() ?? [];
         if (purchaseItem.value != null) {
@@ -267,6 +273,7 @@ class AddPurchaseItemController extends GetxController {
           selectedTaxSlab.value = taxSlabs.first;
         }
         isLoading.value = false;
+        selectedTaxSlab.refresh();
       },
     );
   }

@@ -76,61 +76,146 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           Obx(
-                            () => AutocompleteTextField<Supplier>(
-                              controller: _controller.supplierController,
-                              getSuggestions:
-                                  _controller.getSupplierSuggestions,
-                              onSelected: _controller.onSupplierSelected,
-                              suggestions: _controller.suppliers,
-                              selectedValue: _controller.selectedSupplier.value,
-                              label: 'Supplier',
+                            () => Stack(
+                              children: [
+                                AutocompleteTextField<Supplier>(
+                                  controller: _controller.supplierController,
+                                  getSuggestions:
+                                      _controller.getSupplierSuggestions,
+                                  onSelected: _controller.onSupplierSelected,
+                                  suggestions: _controller.suppliers,
+                                  selectedValue:
+                                      _controller.selectedSupplier.value,
+                                  label: 'Supplier',
+                                ),
+                                Visibility(
+                                  visible: _controller.isImported.value,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: Get.width,
+                                      height: 80,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 20),
-                          IconTextField(
-                            controller: _controller.invoiceNumberController,
-                            hint: 'Enter invoice number',
-                            textInputType: TextInputType.text,
-                            whiteBackground: false,
-                            label: 'Invoice Number',
-                          ),
-                          const SizedBox(height: 20),
-                          InkWell(
-                            onTap:
-                                () => _controller.onInvoiceDateClicked(context),
-                            child: IconTextField(
-                              controller: _controller.invoiceDateController,
-                              hint: 'Enter invoice date',
-                              textInputType: TextInputType.text,
-                              whiteBackground: false,
-                              label: 'Invoice Date',
-                              isEnabled: false,
-                              suffixIcon: 'assets/icons/ic_calendar.png',
+                          Obx(
+                            () => Stack(
+                              children: [
+                                IconTextField(
+                                  controller:
+                                      _controller.invoiceNumberController,
+                                  hint: 'Enter invoice number',
+                                  textInputType: TextInputType.text,
+                                  whiteBackground: false,
+                                  label: 'Invoice Number',
+                                ),
+                                Visibility(
+                                  visible: _controller.isImported.value,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: Get.width,
+                                      height: 80,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 20),
-                          InkWell(
-                            onTap:
-                                () =>
-                                    _controller.onPurchaseDateClicked(context),
-                            child: IconTextField(
-                              controller: _controller.purchaseDateController,
-                              hint: 'Enter purchase date',
-                              textInputType: TextInputType.text,
-                              whiteBackground: false,
-                              label: 'Purchase Date',
-                              isEnabled: false,
-                              suffixIcon: 'assets/icons/ic_calendar.png',
+                          Obx(
+                            () => Stack(
+                              children: [
+                                InkWell(
+                                  onTap:
+                                      () => _controller.onInvoiceDateClicked(
+                                        context,
+                                      ),
+                                  child: IconTextField(
+                                    controller:
+                                        _controller.invoiceDateController,
+                                    hint: 'Enter invoice date',
+                                    textInputType: TextInputType.text,
+                                    whiteBackground: false,
+                                    label: 'Invoice Date',
+                                    isEnabled: false,
+                                    suffixIcon: 'assets/icons/ic_calendar.png',
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _controller.isImported.value,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: Get.width,
+                                      height: 80,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 20),
-                          IconTextField(
-                            controller: _controller.amountController,
-                            hint: 'Enter amount',
-                            textInputType: TextInputType.number,
-                            whiteBackground: false,
-                            label: 'Amount',
-                            icon: 'assets/icons/ic_rupee.png',
+                          Obx(
+                            () => Stack(
+                              children: [
+                                InkWell(
+                                  onTap:
+                                      () => _controller.onPurchaseDateClicked(
+                                        context,
+                                      ),
+                                  child: IconTextField(
+                                    controller:
+                                        _controller.purchaseDateController,
+                                    hint: 'Enter purchase date',
+                                    textInputType: TextInputType.text,
+                                    whiteBackground: false,
+                                    label: 'Purchase Date',
+                                    isEnabled: false,
+                                    suffixIcon: 'assets/icons/ic_calendar.png',
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _controller.isImported.value,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: Get.width,
+                                      height: 80,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Obx(
+                            () => Stack(
+                              children: [
+                                IconTextField(
+                                  controller: _controller.amountController,
+                                  hint: 'Enter amount',
+                                  textInputType: TextInputType.number,
+                                  whiteBackground: false,
+                                  label: 'Amount',
+                                  icon: 'assets/icons/ic_rupee.png',
+                                ),
+                                Visibility(
+                                  visible: _controller.isImported.value,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: Get.width,
+                                      height: 80,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 40),
                           Row(
@@ -168,7 +253,7 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                   endColor: appColorGradient2,
                                 ),
                               ),
-                              const SizedBox(width: 20,),
+                              const SizedBox(width: 20),
                               Expanded(
                                 child: AppButton(
                                   label: 'Add new item',
@@ -181,42 +266,46 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: 100
-                            ),
+                            constraints: BoxConstraints(minHeight: 100),
                             child: Obx(
-                                  () =>
-                              _controller.items.isEmpty
-                                  ? Center(
-                                child: Text(
-                                  'No items added',
-                                  style: TextStyle(color: textColor),
-                                ),
-                              )
-                                  : ListView.builder(
-                                primary: false,
-                                shrinkWrap: true,
-                                itemCount: _controller.items.length,
-                                itemBuilder:
-                                    (context, index) => InkWell(
-                                  onTap:
-                                      () => _controller.onItemClicked(
-                                    _controller.items[index],
-                                  ),
-                                  child: PurchaseItemWidget(
-                                    purchaseItem:
-                                    _controller.items[index],
-                                    onDeleteClicked:
-                                        () => _controller
-                                        .onDeleteProductClicked(
-                                      _controller
-                                          .items[index],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              () =>
+                                  _controller.items.isEmpty
+                                      ? Center(
+                                        child: Text(
+                                          'No items added',
+                                          style: TextStyle(color: textColor),
+                                        ),
+                                      )
+                                      : ListView.builder(
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        itemCount: _controller.items.length,
+                                        itemBuilder:
+                                            (context, index) => InkWell(
+                                              onTap:
+                                                  () =>
+                                                      _controller.onItemClicked(
+                                                        _controller
+                                                            .items[index],
+                                                      ),
+                                              child: PurchaseItemWidget(
+                                                purchaseItem:
+                                                    _controller.items[index],
+                                                isImported:
+                                                    _controller
+                                                        .isImported
+                                                        .value,
+                                                onDeleteClicked:
+                                                    () => _controller
+                                                        .onDeleteProductClicked(
+                                                          _controller
+                                                              .items[index],
+                                                        ),
+                                              ),
+                                            ),
+                                      ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

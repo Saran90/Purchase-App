@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
 
 class PurchaseItemWidget extends StatelessWidget {
-  const PurchaseItemWidget({super.key, required this.purchaseItem,
-  required this.onDeleteClicked});
+  const PurchaseItemWidget({
+    super.key,
+    required this.purchaseItem,
+    required this.isImported,
+    required this.onDeleteClicked,
+  });
 
   final PurchaseItem purchaseItem;
   final Function() onDeleteClicked;
+  final bool isImported;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +49,7 @@ class PurchaseItemWidget extends StatelessWidget {
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
-                                overflow: TextOverflow.ellipsis
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             Row(
@@ -110,8 +115,18 @@ class PurchaseItemWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 5),
-        IconButton(onPressed: onDeleteClicked, icon: Icon(Icons.delete, color: Colors.red, size: 30,))
+        Visibility(
+          visible: !isImported,
+          child: Row(
+            children: [
+              const SizedBox(width: 5),
+              IconButton(
+                onPressed: onDeleteClicked,
+                icon: Icon(Icons.delete, color: Colors.red, size: 30),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

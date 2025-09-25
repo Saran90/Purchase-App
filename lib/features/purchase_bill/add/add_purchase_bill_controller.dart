@@ -165,6 +165,7 @@ class AddPurchaseBillController extends GetxController {
       int index = items.indexWhere((element) => element.id == item.id);
       items[index] = item;
     }
+    FocusScope.of(Get.context!).unfocus();
   }
 
   Future<void> onSaveClicked() async {

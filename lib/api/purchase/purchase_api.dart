@@ -124,6 +124,8 @@ class PurchaseApi extends ApiClient {
         return Right(productByBarcodeResponse);
       } else if (response.statusCode == 401) {
         return Left(AuthFailure());
+      }  else if (response.statusCode == 404) {
+        return Left(NoDataFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
         return Left(APIFailure<ErrorResponse>(error: errorResponse));

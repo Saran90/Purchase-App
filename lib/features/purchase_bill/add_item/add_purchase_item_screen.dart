@@ -78,19 +78,76 @@ class AddPurchaseItemScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 30),
-                        InkWell(
-                          onTap: () => _controller.onBarcodeClicked(context),
-                          child: IconTextField(
-                            controller: _controller.barcodeController,
-                            hint: 'Enter barcode',
-                            textInputType: TextInputType.text,
-                            whiteBackground: false,
-                            label: 'Barcode',
-                            isEnabled: false,
-                            suffixIcon: 'assets/icons/ic_barcode.png',
-                          ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap:
+                                    () => _controller.onBarcodeClicked(
+                                      context,
+                                      false,
+                                    ),
+                                child: IconTextField(
+                                  controller: _controller.barcodeController,
+                                  hint: 'Enter barcode',
+                                  textInputType: TextInputType.text,
+                                  whiteBackground: false,
+                                  label: 'Barcode',
+                                  isEnabled: false,
+                                  suffixIcon: 'assets/icons/ic_barcode.png',
+                                ),
+                              ),
+                            ),
+                            Visibility(
+                              visible: _controller.showAddNewBarcodeView.value,
+                              child: Row(
+                                children: [
+                                  const SizedBox(width: 20),
+                                  InkWell(
+                                    onTap: _controller.onAddNewBarcodeClicked,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 20),
+                        Obx(
+                          () => Visibility(
+                            visible: _controller.showNewBarcodeView.value,
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap:
+                                      () => _controller.onBarcodeClicked(
+                                        context,
+                                        true,
+                                      ),
+                                  child: IconTextField(
+                                    controller:
+                                        _controller.newBarcodeController,
+                                    hint: 'Enter barcode',
+                                    textInputType: TextInputType.text,
+                                    whiteBackground: false,
+                                    label: 'New Barcode',
+                                    isEnabled: false,
+                                    suffixIcon: 'assets/icons/ic_barcode.png',
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          ),
+                        ),
                         _controller.isNewProduct.value
                             ? IconTextField(
                               controller: _controller.nameController,
@@ -185,21 +242,23 @@ class AddPurchaseItemScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child:
-                                  Obx(() => _controller.isNewProduct.value
-                                      ? AppDropDown(
-                                    items: _controller.taxSlabs,
-                                    hint: 'Select',
-                                    label: 'Tax Percentage',
-                                    selectedValue:
-                                    _controller
-                                        .selectedTaxSlab
-                                        .value ??
-                                        0,
-                                    onValueSelected:
-                                    _controller.onTaxSlabSelected,
-                                  )
-                                      : SizedBox(),),
+                              child: Obx(
+                                () =>
+                                    _controller.isNewProduct.value
+                                        ? AppDropDown(
+                                          items: _controller.taxSlabs,
+                                          hint: 'Select',
+                                          label: 'Tax Percentage',
+                                          selectedValue:
+                                              _controller
+                                                  .selectedTaxSlab
+                                                  .value ??
+                                              0,
+                                          onValueSelected:
+                                              _controller.onTaxSlabSelected,
+                                        )
+                                        : SizedBox(),
+                              ),
                             ),
                           ],
                         ),
@@ -219,18 +278,18 @@ class AddPurchaseItemScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 40),
-                        AppButton(
-                          label: 'Add',
+                        Obx(() => AppButton(
+                          label: _controller.isEdit.value ? 'Update' : 'Add',
                           onSubmit: _controller.onSaved,
                           startColor:
-                              _controller.isNewProduct.value
-                                  ? appColorGradient3
-                                  : appColorGradient1,
+                          _controller.isNewProduct.value
+                              ? appColorGradient3
+                              : appColorGradient1,
                           endColor:
-                              _controller.isNewProduct.value
-                                  ? appColorGradient4
-                                  : appColorGradient2,
-                        ),
+                          _controller.isNewProduct.value
+                              ? appColorGradient4
+                              : appColorGradient2,
+                        ),),
                       ],
                     ),
                   ),

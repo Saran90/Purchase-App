@@ -369,17 +369,20 @@ class AddPurchaseItemScreen extends StatelessWidget {
                         ),),
                         const SizedBox(height: 40),
                         Obx(
-                          () => AppButton(
-                            label: _controller.isEdit.value ? 'Update' : 'Add',
-                            onSubmit: _controller.onSaved,
-                            startColor:
-                                _controller.isNewProduct.value
-                                    ? appColorGradient3
-                                    : appColorGradient1,
-                            endColor:
-                                _controller.isNewProduct.value
-                                    ? appColorGradient4
-                                    : appColorGradient2,
+                          () => Visibility(
+                            visible: !_controller.isImported.value,
+                            child: AppButton(
+                              label: _controller.isEdit.value ? 'Update' : 'Add',
+                              onSubmit: _controller.onSaved,
+                              startColor:
+                                  _controller.isNewProduct.value
+                                      ? appColorGradient3
+                                      : appColorGradient1,
+                              endColor:
+                                  _controller.isNewProduct.value
+                                      ? appColorGradient4
+                                      : appColorGradient2,
+                            ),
                           ),
                         ),
                       ],

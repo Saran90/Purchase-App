@@ -33,8 +33,8 @@ class AddPurchaseBillScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height,
             child: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 70),
+                Obx(() => Padding(
+                  padding: EdgeInsets.only(bottom: !_controller.isImported.value?70:20),
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -62,7 +62,7 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           Center(
                             child: Obx(
-                              () => Text(
+                                  () => Text(
                                 _controller.purchaseId.value == 0
                                     ? 'Add Purchase Bill'
                                     : _controller.invoiceNumber.value,
@@ -76,16 +76,16 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           Obx(
-                            () => Stack(
+                                () => Stack(
                               children: [
                                 AutocompleteTextField<Supplier>(
                                   controller: _controller.supplierController,
                                   getSuggestions:
-                                      _controller.getSupplierSuggestions,
+                                  _controller.getSupplierSuggestions,
                                   onSelected: _controller.onSupplierSelected,
                                   suggestions: _controller.suppliers,
                                   selectedValue:
-                                      _controller.selectedSupplier.value,
+                                  _controller.selectedSupplier.value,
                                   label: 'Supplier',
                                 ),
                                 Visibility(
@@ -103,11 +103,11 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           Obx(
-                            () => Stack(
+                                () => Stack(
                               children: [
                                 IconTextField(
                                   controller:
-                                      _controller.invoiceNumberController,
+                                  _controller.invoiceNumberController,
                                   hint: 'Enter invoice number',
                                   textInputType: TextInputType.text,
                                   whiteBackground: false,
@@ -128,16 +128,16 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           Obx(
-                            () => Stack(
+                                () => Stack(
                               children: [
                                 InkWell(
                                   onTap:
                                       () => _controller.onInvoiceDateClicked(
-                                        context,
-                                      ),
+                                    context,
+                                  ),
                                   child: IconTextField(
                                     controller:
-                                        _controller.invoiceDateController,
+                                    _controller.invoiceDateController,
                                     hint: 'Enter invoice date',
                                     textInputType: TextInputType.text,
                                     whiteBackground: false,
@@ -161,16 +161,16 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           Obx(
-                            () => Stack(
+                                () => Stack(
                               children: [
                                 InkWell(
                                   onTap:
                                       () => _controller.onPurchaseDateClicked(
-                                        context,
-                                      ),
+                                    context,
+                                  ),
                                   child: IconTextField(
                                     controller:
-                                        _controller.purchaseDateController,
+                                    _controller.purchaseDateController,
                                     hint: 'Enter purchase date',
                                     textInputType: TextInputType.text,
                                     whiteBackground: false,
@@ -194,7 +194,7 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           Obx(
-                            () => Stack(
+                                () => Stack(
                               children: [
                                 IconTextField(
                                   controller: _controller.amountController,
@@ -230,7 +230,7 @@ class AddPurchaseBillScreen extends StatelessWidget {
                                 ),
                               ),
                               Obx(
-                                () => Text(
+                                    () => Text(
                                   '${_controller.items.length} count',
                                   style: TextStyle(
                                     fontSize: 14,
@@ -268,62 +268,65 @@ class AddPurchaseBillScreen extends StatelessWidget {
                           ConstrainedBox(
                             constraints: BoxConstraints(minHeight: 100),
                             child: Obx(
-                              () =>
-                                  _controller.items.isEmpty
-                                      ? Center(
-                                        child: Text(
-                                          'No items added',
-                                          style: TextStyle(color: textColor),
-                                        ),
-                                      )
-                                      : ListView.builder(
-                                        primary: false,
-                                        shrinkWrap: true,
-                                        itemCount: _controller.items.length,
-                                        itemBuilder:
-                                            (context, index) => InkWell(
-                                              onTap:
-                                                  () =>
-                                                      _controller.onItemClicked(
-                                                        _controller
-                                                            .items[index],
-                                                      ),
-                                              child: PurchaseItemWidget(
-                                                purchaseItem:
-                                                    _controller.items[index],
-                                                isImported:
-                                                    _controller
-                                                        .isImported
-                                                        .value,
-                                                onDeleteClicked:
-                                                    () => _controller
-                                                        .onDeleteProductClicked(
-                                                          _controller
-                                                              .items[index],
-                                                        ),
-                                              ),
-                                            ),
+                                  () =>
+                              _controller.items.isEmpty
+                                  ? Center(
+                                child: Text(
+                                  'No items added',
+                                  style: TextStyle(color: textColor),
+                                ),
+                              )
+                                  : ListView.builder(
+                                primary: false,
+                                shrinkWrap: true,
+                                itemCount: _controller.items.length,
+                                itemBuilder:
+                                    (context, index) => InkWell(
+                                  onTap:
+                                      () =>
+                                      _controller.onItemClicked(
+                                        _controller
+                                            .items[index],
                                       ),
+                                  child: PurchaseItemWidget(
+                                    purchaseItem:
+                                    _controller.items[index],
+                                    isImported:
+                                    _controller
+                                        .isImported
+                                        .value,
+                                    onDeleteClicked:
+                                        () => _controller
+                                        .onDeleteProductClicked(
+                                      _controller
+                                          .items[index],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: 150,
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: AppButton(
-                      label: 'Save',
-                      onSubmit: _controller.onSaveClicked,
-                      startColor: appColorGradient1,
-                      endColor: appColorGradient2,
+                ),),
+                Obx(() => Visibility(
+                  visible: !_controller.isImported.value,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: 150,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: AppButton(
+                        label: 'Save',
+                        onSubmit: _controller.onSaveClicked,
+                        startColor: appColorGradient1,
+                        endColor: appColorGradient2,
+                      ),
                     ),
                   ),
-                ),
+                ),),
                 Obx(
                   () => Visibility(
                     visible: _controller.isLoading.value,

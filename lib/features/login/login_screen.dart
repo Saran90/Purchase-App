@@ -86,6 +86,22 @@ class LoginScreen extends StatelessWidget {
                         )
                         : const SizedBox(),
               ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Obx(
+                    () => Text(
+                      'v ${_controller.version.value}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

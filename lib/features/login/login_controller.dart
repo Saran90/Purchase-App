@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:purchase_app/api/auth/auth_api.dart';
 import 'package:purchase_app/api/auth/models/login_request.dart';
 import 'package:purchase_app/main.dart';
@@ -17,6 +18,13 @@ class LoginController extends GetxController {
 
   final AuthApi authApi = Get.find();
   RxBool isLoading = RxBool(false);
+  RxString version = ''.obs;
+
+  @override
+  void onInit() {
+    PackageInfo.fromPlatform().then((value) => version.value = value.version);
+    super.onInit();
+  }
 
   Future<void> onLoginClicked() async {
     if (_validateFields()) {

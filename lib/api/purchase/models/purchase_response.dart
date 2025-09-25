@@ -35,7 +35,7 @@ class Items {
     map["freeQuantity"] = freeQuantity;
     map["rowNumber"] = rowNumber;
     map["Packing"] = packing;
-    map["BarCode"] = barcode;
+    map["barCode"] = barcode;
     map["HsnCode"] = hsnCode;
     map["taxPer"] = taxPercentage;
     return map;
@@ -50,7 +50,7 @@ class Items {
     freeQuantity = json["freeQuantity"];
     rowNumber = json["rowNumber"];
     packing = json["Packing"];
-    barcode = json["BarCode"];
+    barcode = json["barCode"];
     hsnCode = json["HsnCode"];
     taxPercentage = json["taxPer"];
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:purchase_app/main.dart';
 import 'package:purchase_app/utils/colors.dart';
 
@@ -15,8 +16,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String version = '';
+
   @override
   void initState() {
+    PackageInfo.fromPlatform().then(
+      (value) => setState(() {
+        version = value.version;
+      }),
+    );
     Timer(const Duration(seconds: 3), () {
       if ((appStorage.getAccessToken()?.isNotEmpty) ?? false) {
         Get.offAndToNamed(purchaseBillsRoute);
@@ -39,15 +47,33 @@ class _SplashScreenState extends State<SplashScreen> {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Center(
-          child: Text(
-            'Purchase App',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
+                'Purchase App',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Text(
+                  'v $version',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

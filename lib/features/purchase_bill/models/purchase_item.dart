@@ -4,6 +4,7 @@ class PurchaseItem {
   String name;
   String packaging;
   String barcode;
+  String newBarcode;
   String hsnCode;
   double price;
   int quantity;
@@ -16,6 +17,7 @@ class PurchaseItem {
     required this.rowNumber,
     required this.name,
     required this.packaging,
+    required this.newBarcode,
     required this.barcode,
     required this.price,
     required this.freeQuantity,

@@ -75,6 +75,10 @@ class AddPurchaseItemController extends GetxController {
       print('Selected Tax: ${selectedTaxSlab.value}');
       taxPercentageController.text = item.taxPercentage.toString();
       isNewProduct.value = item.isNew;
+      if (item.newBarcode.isNotEmpty) {
+        newBarcodeController.text = item.newBarcode;
+        showNewBarcodeView.value = true;
+      }
       if (item.id != 0) {
         isNewProduct.value = false;
       } else {
@@ -187,6 +191,7 @@ class AddPurchaseItemController extends GetxController {
                     name: nameController.text,
                     packaging: packagingController.text,
                     barcode: barcodeController.text,
+                    newBarcode: '',
                     price: mrpController.text.toDouble() ?? 0,
                     freeQuantity: freeQuantityController.text.toInt() ?? 0,
                     quantity: quantityController.text.toInt() ?? 0,
@@ -203,10 +208,8 @@ class AddPurchaseItemController extends GetxController {
                   id: purchaseId.value,
                   name: nameController.text,
                   packaging: packagingController.text,
-                  barcode:
-                  newBarcodeController.text.isNotEmpty
-                      ? newBarcodeController.text
-                      : barcodeController.text,
+                  barcode: barcodeController.text,
+                  newBarcode: newBarcodeController.text,
                   price: mrpController.text.toDouble() ?? 0,
                   freeQuantity: freeQuantityController.text.toInt() ?? 0,
                   quantity: quantityController.text.toInt() ?? 0,

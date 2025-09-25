@@ -108,19 +108,25 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onAddClicked() async {
-    if(!isImported.value) {
+    if (!isImported.value) {
       var item =
-      await Get.toNamed(addPurchaseItemRoute, arguments: [null, false, isImported.value])
-      as PurchaseItem?;
+          await Get.toNamed(
+                addPurchaseItemRoute,
+                arguments: [null, false, isImported.value],
+              )
+              as PurchaseItem?;
       onItemAdded(item);
     }
   }
 
   Future<void> onAddNewClicked() async {
-    if(!isImported.value) {
+    if (!isImported.value) {
       var item =
-      await Get.toNamed(addPurchaseItemRoute, arguments: [null, true, isImported.value])
-      as PurchaseItem?;
+          await Get.toNamed(
+                addPurchaseItemRoute,
+                arguments: [null, true, isImported.value],
+              )
+              as PurchaseItem?;
       onItemAdded(item);
     }
   }
@@ -174,7 +180,7 @@ class AddPurchaseBillController extends GetxController {
   }
 
   Future<void> onSaveClicked() async {
-    if(!isImported.value) {
+    if (!isImported.value) {
       if (selectedSupplier.value != null) {
         if (invoiceNumberController.text.isNotEmpty) {
           if (amountController.text.isNotEmpty) {
@@ -190,28 +196,30 @@ class AddPurchaseBillController extends GetxController {
                 userId: userId.value,
                 supplierName: selectedSupplier.value?.name,
                 itemsList:
-                items
-                    .map(
-                      (element) =>
-                      Items(
-                        rowNumber: element.rowNumber,
-                        quantity: element.quantity,
-                        freeQuantity: element.freeQuantity,
-                        mrp: element.price,
-                        productId: element.id,
-                        productName: element.name,
-                        purchaseDetailId: 0,
-                        packing: element.packaging,
-                        taxPercentage: element.taxPercentage,
-                        hsnCode: element.hsnCode,
-                        barcode: element.barcode,
-                      ),
-                )
-                    .toList(),
+                    items
+                        .map(
+                          (element) => Items(
+                            rowNumber: element.rowNumber,
+                            quantity: element.quantity,
+                            freeQuantity: element.freeQuantity,
+                            mrp: element.price,
+                            productId: element.id,
+                            productName: element.name,
+                            purchaseDetailId: 0,
+                            packing: element.packaging,
+                            taxPercentage: element.taxPercentage,
+                            hsnCode: element.hsnCode,
+                            barcode:
+                                element.newBarcode.isEmpty
+                                    ? element.barcode
+                                    : element.newBarcode,
+                          ),
+                        )
+                        .toList(),
               );
               var result = await purchaseApi.addPurchase(addPurchaseRequest);
               result.fold(
-                    (l) {
+                (l) {
                   if (l is APIFailure) {
                     ErrorResponse? errorResponse = l.error;
                     showToast(
@@ -219,15 +227,15 @@ class AddPurchaseBillController extends GetxController {
                     );
                   } else if (l is ServerFailure) {
                     showToast(message: l.message ?? serverFailureMessage);
-                  } else
-                  if (l is AuthFailure) {} else if (l is NetworkFailure) {
+                  } else if (l is AuthFailure) {
+                  } else if (l is NetworkFailure) {
                     showToast(message: networkFailureMessage);
                   } else {
                     showToast(message: unknownFailureMessage);
                   }
                   isLoading.value = false;
                 },
-                    (r) {
+                (r) {
                   if (r != null) {
                     purchaseId.value = r.purchaseId ?? 0;
                     showToast(
@@ -304,7 +312,8 @@ class AddPurchaseBillController extends GetxController {
                           id: e.productId?.toInt() ?? 0,
                           name: e.productName ?? '',
                           packaging: e.packing ?? '',
-                          barcode: '',
+                          barcode: e.barcode ?? '',
+                          newBarcode: '',
                           rowNumber: e.rowNumber?.toInt() ?? 0,
                           price: e.mrp?.toDouble() ?? 0,
                           freeQuantity: e.freeQuantity?.toInt() ?? 0,
@@ -329,19 +338,19 @@ class AddPurchaseBillController extends GetxController {
   }
 
   void onDeleteProductClicked(PurchaseItem item) {
-    if(!isImported.value) {
+    if (!isImported.value) {
       showDeleteConfirmationDialog(
         item,
-            () {
+        () {
           Get.back();
           items.removeWhere(
-                (element) =>
-            (element.id == item.id) &&
+            (element) =>
+                (element.id == item.id) &&
                 (element.price == item.price) &&
                 (element.name == item.name),
           );
         },
-            () {
+        () {
           Get.back();
         },
       );

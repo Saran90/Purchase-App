@@ -141,32 +141,60 @@ class AddPurchaseItemScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Obx(
-                          () => Visibility(
-                            visible: _controller.showNewBarcodeView.value,
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap:
-                                      () => _controller.onBarcodeClicked(
-                                        context,
-                                        true,
+                        if(_controller.showNewBarcodeView.value) Obx(
+                              () => Column(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: InkWell(
+                                          onTap:
+                                              () => _controller.onBarcodeClicked(
+                                            context,
+                                            true,
+                                          ),
+                                          child: IconTextField(
+                                            controller:
+                                            _controller.newBarcodeController,
+                                            hint: 'Enter barcode',
+                                            textInputType: TextInputType.text,
+                                            whiteBackground: false,
+                                            label: 'New Barcode',
+                                            isEnabled: false,
+                                            suffixIcon: 'assets/icons/ic_barcode.png',
+                                          ),
+                                        ),
                                       ),
-                                  child: IconTextField(
-                                    controller:
-                                        _controller.newBarcodeController,
-                                    hint: 'Enter barcode',
-                                    textInputType: TextInputType.text,
-                                    whiteBackground: false,
-                                    label: 'New Barcode',
-                                    isEnabled: false,
-                                    suffixIcon: 'assets/icons/ic_barcode.png',
+                                      Row(
+                                        children: [
+                                          const SizedBox(width: 30),
+                                          InkWell(
+                                            onTap:
+                                            _controller
+                                                .onRemoveNewBarcodeClicked,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 20,
+                                              ),
+                                              child: Text(
+                                                '-',
+                                                style: TextStyle(
+                                                    fontSize: 30,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.white
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                        ],
+                                      )
+                                    ],
                                   ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
-                            ),
-                          ),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
                         ),
                        Obx(() => Stack(
                          children: [

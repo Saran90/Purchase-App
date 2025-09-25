@@ -318,4 +318,9 @@ class AddPurchaseItemController extends GetxController {
   void onAddNewBarcodeClicked() {
     showNewBarcodeView.value = true;
   }
+
+  void onRemoveNewBarcodeClicked() {
+    showNewBarcodeView.value = false;
+    newBarcodeController.text = '';
+  }
 }

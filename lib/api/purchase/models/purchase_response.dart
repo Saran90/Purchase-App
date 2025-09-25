@@ -34,9 +34,9 @@ class Items {
     map["quantity"] = quantity;
     map["freeQuantity"] = freeQuantity;
     map["rowNumber"] = rowNumber;
-    map["Packing"] = packing;
+    map["packing"] = packing;
     map["barCode"] = barcode;
-    map["HsnCode"] = hsnCode;
+    map["hsnCode"] = hsnCode;
     map["taxPer"] = taxPercentage;
     return map;
   }
@@ -49,9 +49,9 @@ class Items {
     quantity = json["quantity"];
     freeQuantity = json["freeQuantity"];
     rowNumber = json["rowNumber"];
-    packing = json["Packing"];
+    packing = json["packing"];
     barcode = json["barCode"];
-    hsnCode = json["HsnCode"];
+    hsnCode = json["hsnCode"];
     taxPercentage = json["taxPer"];
   }
 }

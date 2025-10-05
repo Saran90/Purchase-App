@@ -17,6 +17,7 @@ import '../../../utils/messages.dart';
 import '../widgets/product_selection_widget.dart';
 
 class AddPurchaseItemController extends GetxController {
+  final rowController = TextEditingController();
   final barcodeController = TextEditingController();
   final newBarcodeController = TextEditingController();
   final hsnCodeController = TextEditingController();
@@ -74,6 +75,7 @@ class AddPurchaseItemController extends GetxController {
       freeQuantityController.text = item.freeQuantity.toString();
       purchaseId.value = item.id;
       rowNumber.value = item.rowNumber;
+      rowController.text = rowNumber.string;
       hsnCodeController.text = item.hsnCode;
       selectedTaxSlab.value = item.taxPercentage;
       print('Selected Tax: ${selectedTaxSlab.value}');
@@ -94,6 +96,7 @@ class AddPurchaseItemController extends GetxController {
         () => Get.focusScope?.unfocus(),
       );
     } else {
+      rowController.text = rowNumber.string;
       Future.delayed(Duration(milliseconds: 500), () {
         onBarcodeClicked(Get.context!, false);
       });
@@ -151,7 +154,7 @@ class AddPurchaseItemController extends GetxController {
     if (selectedProductItem.value != null) {
       nameController.text = selectedProductItem.value!.name;
       packagingController.text = selectedProductItem.value!.packing;
-      if(selectedProductItem.value!.availableMrps.length==1) {
+      if (selectedProductItem.value!.availableMrps.length == 1) {
         mrpController.text = selectedProductItem.value!.mrp.toString();
       }
       barcodeController.text = selectedProductItem.value!.barCode;
@@ -203,6 +206,7 @@ class AddPurchaseItemController extends GetxController {
               message: 'Both Quantity and free quantity cannot be empty or 0',
             );
           } else {
+            int? row = int.tryParse(rowController.text);
             if (isNewProduct.value) {
               if (hsnCodeController.text.isEmpty) {
                 showToast(message: 'HSN code should not be empty');
@@ -217,7 +221,7 @@ class AddPurchaseItemController extends GetxController {
                     price: mrpController.text.toDouble() ?? 0,
                     freeQuantity: freeQuantityController.text.toInt() ?? 0,
                     quantity: quantityController.text.toInt() ?? 0,
-                    rowNumber: rowNumber.value,
+                    rowNumber: row ?? 0,
                     hsnCode: hsnCodeController.text,
                     taxPercentage: selectedTaxSlab.value ?? 0,
                     isNew: isNewProduct.value,
@@ -235,7 +239,7 @@ class AddPurchaseItemController extends GetxController {
                   price: mrpController.text.toDouble() ?? 0,
                   freeQuantity: freeQuantityController.text.toInt() ?? 0,
                   quantity: quantityController.text.toInt() ?? 0,
-                  rowNumber: rowNumber.value,
+                  rowNumber: row ?? 0,
                   hsnCode: hsnCodeController.text,
                   taxPercentage:
                       double.tryParse(taxPercentageController.text) ?? 0,

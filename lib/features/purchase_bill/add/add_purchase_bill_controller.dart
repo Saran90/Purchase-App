@@ -171,6 +171,12 @@ class AddPurchaseBillController extends GetxController {
         items.add(item);
       }
     }
+    reOrderListBasedOnRowNumber();
+  }
+
+  void reOrderListBasedOnRowNumber() {
+    items.value =
+        items.toList()..sort((a, b) => a.rowNumber.compareTo(b.rowNumber));
   }
 
   void onItemUpdated(PurchaseItem? item) {
@@ -178,6 +184,7 @@ class AddPurchaseBillController extends GetxController {
       int index = items.indexWhere((element) => element.id == item.id);
       items[index] = item;
     }
+    reOrderListBasedOnRowNumber();
     FocusScope.of(Get.context!).unfocus();
   }
 

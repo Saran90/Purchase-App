@@ -242,59 +242,67 @@ class AddPurchaseItemScreen extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: IconTextField(
-                                      controller: _controller.packagingController,
+                                      controller:
+                                          _controller.packagingController,
                                       hint: 'Enter packing',
                                       textInputType: TextInputType.text,
                                       whiteBackground: false,
                                       label: 'Packing',
                                     ),
                                   ),
-                                  const SizedBox(width: 10,),
+                                  const SizedBox(width: 10),
                                   (_controller.selectedProductItem.value
-                                      ?.hasMutipleMrps() ??
-                                      false)
+                                              ?.hasMutipleMrps() ??
+                                          false)
                                       ? Expanded(
-                                    child: Obx(
+                                        child: Obx(
                                           () => AutocompleteTextField<double>(
-                                        controller:
-                                        _controller.mrpController,
-                                        getSuggestions:
-                                        _controller.getProductMrps,
-                                        onSelected:
-                                        _controller.onMrpSelected,
-                                        suggestions:
-                                        _controller.productMrps,
-                                        selectedValue:
-                                        _controller.selectedMrp.value,
-                                        label: 'MRP',
-                                        formatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'(^\-?\d*\.?\d*)'),
+                                            controller:
+                                                _controller.mrpController,
+                                            getSuggestions:
+                                                _controller.getProductMrps,
+                                            onSelected:
+                                                _controller.onMrpSelected,
+                                            suggestions:
+                                                _controller.productMrps,
+                                            selectedValue:
+                                                _controller.selectedMrp.value,
+                                            label: 'MRP',
+                                            formatters: [
+                                              FilteringTextInputFormatter.allow(
+                                                RegExp(r'(^\d*\.?\d*)'),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                      : Expanded(
-                                    child: IconTextField(
-                                      controller: _controller.mrpController,
-                                      hint: 'Enter mrp',
-                                      textInputType:
-                                      TextInputType.numberWithOptions(
-                                        signed: false,
-                                        decimal: true,
-                                      ),
-                                      whiteBackground: false,
-                                      label: 'MRP',
-                                      formatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(r'(^\-?\d*\.?\d*)'),
                                         ),
-                                      ],
-                                    ),
-                                  ),
+                                      )
+                                      : Expanded(
+                                        child: IconTextField(
+                                          controller: _controller.mrpController,
+                                          hint: 'Enter mrp',
+                                          textInputType:
+                                              TextInputType.numberWithOptions(
+                                                signed: false,
+                                                decimal: true,
+                                              ),
+                                          whiteBackground: false,
+                                          label: 'MRP',
+                                          formatters: [
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'(^\d*\.?\d*)'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                 ],
-                              )
+                              ),
+                              Visibility(
+                                visible: _controller.isImported.value,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: SizedBox(width: Get.width, height: 80),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -307,25 +315,46 @@ class AddPurchaseItemScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
-                                    child: Obx(
-                                      () =>
-                                          _controller.isNewProduct.value
-                                              ? AppDropDown(
-                                                items: _controller.taxSlabs,
-                                                hint: 'Select',
-                                                label: 'Tax Percentage',
-                                                selectedValue:
-                                                    _controller
-                                                        .selectedTaxSlab
-                                                        .value ??
-                                                    0,
-                                                onValueSelected:
-                                                    _controller
-                                                        .onTaxSlabSelected,
-                                              )
-                                              : SizedBox(),
+                                    child: IconTextField(
+                                      controller: _controller.rowController,
+                                      hint: 'Enter row number',
+                                      textInputType:
+                                          TextInputType.numberWithOptions(
+                                            signed: false,
+                                            decimal: false,
+                                          ),
+                                      whiteBackground: false,
+                                      label: 'Row Number',
+                                      formatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'(^\d*\d*)'),
+                                        ),
+                                      ],
                                     ),
                                   ),
+                                  const SizedBox(width: 10),
+                                  _controller.isNewProduct.value
+                                      ? Expanded(
+                                        child: Obx(
+                                          () =>
+                                              _controller.isNewProduct.value
+                                                  ? AppDropDown(
+                                                    items: _controller.taxSlabs,
+                                                    hint: 'Select',
+                                                    label: 'Tax Percentage',
+                                                    selectedValue:
+                                                        _controller
+                                                            .selectedTaxSlab
+                                                            .value ??
+                                                        0,
+                                                    onValueSelected:
+                                                        _controller
+                                                            .onTaxSlabSelected,
+                                                  )
+                                                  : SizedBox(),
+                                        ),
+                                      )
+                                      : SizedBox(),
                                 ],
                               ),
                               Visibility(
@@ -361,7 +390,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
                                       label: 'Quantity',
                                       formatters: [
                                         FilteringTextInputFormatter.allow(
-                                          RegExp(r'(^\-?\d*\.?\d*)'),
+                                          RegExp(r'(^\d*\.?\d*)'),
                                         ),
                                       ],
                                     ),
@@ -381,7 +410,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
                                       label: 'Free Quantity',
                                       formatters: [
                                         FilteringTextInputFormatter.allow(
-                                          RegExp(r'(^\-?\d*\.?\d*)'),
+                                          RegExp(r'(^\d*\.?\d*)'),
                                         ),
                                       ],
                                     ),

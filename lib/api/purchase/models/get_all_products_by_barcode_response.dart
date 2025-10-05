@@ -14,7 +14,7 @@ class Batches {
   }
 }
 
-class GetProductByBarcodeResponse {
+class Data {
   num? productId;
   String? productName;
   String? packing;
@@ -22,7 +22,7 @@ class GetProductByBarcodeResponse {
   String? barCode;
   List<Batches>? batchesList;
 
-  GetProductByBarcodeResponse(
+  Data(
       {this.productId, this.productName, this.packing, this.mrp, this.barCode, this.batchesList});
 
   Map<String, dynamic> toJson() {
@@ -38,7 +38,7 @@ class GetProductByBarcodeResponse {
     return map;
   }
 
-  GetProductByBarcodeResponse.fromJson(dynamic json){
+  Data.fromJson(dynamic json){
     productId = json["productId"];
     productName = json["productName"];
     packing = json["packing"];
@@ -48,6 +48,35 @@ class GetProductByBarcodeResponse {
       batchesList = [];
       json["batches"].forEach((v) {
         batchesList?.add(Batches.fromJson(v));
+      });
+    }
+  }
+}
+
+class GetAllProductsByBarcodeResponse {
+  String? status;
+  String? message;
+  List<Data>? dataList;
+
+  GetAllProductsByBarcodeResponse({this.status, this.message, this.dataList});
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map["status"] = status;
+    map["message"] = message;
+    if (dataList != null) {
+      map["data"] = dataList?.map((v) => v.toJson()).toList();
+    }
+    return map;
+  }
+
+  GetAllProductsByBarcodeResponse.fromJson(dynamic json){
+    status = json["status"];
+    message = json["message"];
+    if (json["data"] != null) {
+      dataList = [];
+      json["data"].forEach((v) {
+        dataList?.add(Data.fromJson(v));
       });
     }
   }

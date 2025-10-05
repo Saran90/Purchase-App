@@ -14,7 +14,7 @@ class Batches {
   }
 }
 
-class GetProductByBarcodeResponse {
+class GetProductByIdResponse {
   num? productId;
   String? productName;
   String? packing;
@@ -22,7 +22,7 @@ class GetProductByBarcodeResponse {
   String? barCode;
   List<Batches>? batchesList;
 
-  GetProductByBarcodeResponse(
+  GetProductByIdResponse(
       {this.productId, this.productName, this.packing, this.mrp, this.barCode, this.batchesList});
 
   Map<String, dynamic> toJson() {
@@ -38,7 +38,7 @@ class GetProductByBarcodeResponse {
     return map;
   }
 
-  GetProductByBarcodeResponse.fromJson(dynamic json){
+  GetProductByIdResponse.fromJson(dynamic json){
     productId = json["productId"];
     productName = json["productName"];
     packing = json["packing"];

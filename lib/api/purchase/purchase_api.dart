@@ -6,7 +6,9 @@ import 'package:purchase_app/api/purchase/models/add_purchase_request.dart';
 import 'package:purchase_app/api/purchase/models/add_purchase_response.dart';
 import 'package:purchase_app/api/purchase/models/delete_purchase_request.dart';
 import 'package:purchase_app/api/purchase/models/delete_purchase_response.dart';
+import 'package:purchase_app/api/purchase/models/get_all_products_by_barcode_response.dart';
 import 'package:purchase_app/api/purchase/models/get_product_by_barcode_response.dart';
+import 'package:purchase_app/api/purchase/models/get_product_by_id_response.dart';
 import 'package:purchase_app/api/purchase/models/get_products_response.dart';
 import 'package:purchase_app/api/purchase/models/get_purchase_bills_response.dart';
 import 'package:purchase_app/api/purchase/models/get_suppliers_response.dart';
@@ -124,7 +126,7 @@ class PurchaseApi extends ApiClient {
         return Right(productByBarcodeResponse);
       } else if (response.statusCode == 401) {
         return Left(AuthFailure());
-      }  else if (response.statusCode == 404) {
+      } else if (response.statusCode == 404) {
         return Left(NoDataFailure());
       } else {
         ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
@@ -132,6 +134,65 @@ class PurchaseApi extends ApiClient {
       }
     } catch (exception) {
       debugPrint('Product By Barcode Call: $exception');
+      if (exception is DioException) {
+        debugPrint('Product By Barcode Call Exception: ${exception.message}');
+        ErrorResponse? errorResponse = ErrorResponse.fromJson(
+          exception.response?.data,
+        );
+        return Left(APIFailure<ErrorResponse>(error: errorResponse));
+      }
+      return Left(ServerFailure(message: exception.toString()));
+    }
+  }
+
+  Future<Either<Failure, GetAllProductsByBarcodeResponse?>>
+  getAllProductsByBarcode(String barcode) async {
+    try {
+      var response = await get('$getAllProductsByCodeUrl?barCode=$barcode');
+      if (response.isOk) {
+        GetAllProductsByBarcodeResponse productByBarcodeResponse =
+            GetAllProductsByBarcodeResponse.fromJson(response.body);
+        return Right(productByBarcodeResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
+      } else if (response.statusCode == 404) {
+        return Left(NoDataFailure());
+      } else {
+        ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
+        return Left(APIFailure<ErrorResponse>(error: errorResponse));
+      }
+    } catch (exception) {
+      debugPrint('Product By Barcode Call: $exception');
+      if (exception is DioException) {
+        debugPrint('Product By Barcode Call Exception: ${exception.message}');
+        ErrorResponse? errorResponse = ErrorResponse.fromJson(
+          exception.response?.data,
+        );
+        return Left(APIFailure<ErrorResponse>(error: errorResponse));
+      }
+      return Left(ServerFailure(message: exception.toString()));
+    }
+  }
+
+  Future<Either<Failure, GetProductByIdResponse?>> getProductsById(
+    int id,
+  ) async {
+    try {
+      var response = await get('$getProductsByIdUrl?productId=$id');
+      if (response.isOk) {
+        GetProductByIdResponse productByIdResponse =
+            GetProductByIdResponse.fromJson(response.body);
+        return Right(productByIdResponse);
+      } else if (response.statusCode == 401) {
+        return Left(AuthFailure());
+      } else if (response.statusCode == 404) {
+        return Left(NoDataFailure());
+      } else {
+        ErrorResponse? errorResponse = ErrorResponse.fromJson(response.body);
+        return Left(APIFailure<ErrorResponse>(error: errorResponse));
+      }
+    } catch (exception) {
+      debugPrint('Product By Id Call: $exception');
       if (exception is DioException) {
         debugPrint('Product By Barcode Call Exception: ${exception.message}');
         ErrorResponse? errorResponse = ErrorResponse.fromJson(

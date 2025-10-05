@@ -116,6 +116,7 @@ class AddPurchaseBillController extends GetxController {
               )
               as PurchaseItem?;
       onItemAdded(item);
+      Get.focusScope?.unfocus();
     }
   }
 
@@ -128,6 +129,7 @@ class AddPurchaseBillController extends GetxController {
               )
               as PurchaseItem?;
       onItemAdded(item);
+      Get.focusScope?.unfocus();
     }
   }
 
@@ -473,5 +475,6 @@ class AddPurchaseBillController extends GetxController {
             )
             as PurchaseItem?;
     onItemUpdated(item);
+    Get.focusScope?.unfocus();
   }
 }

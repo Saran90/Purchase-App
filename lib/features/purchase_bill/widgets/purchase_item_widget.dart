@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:purchase_app/features/purchase_bill/models/purchase_item.dart';
 
+import '../../../utils/messages.dart';
+
 class PurchaseItemWidget extends StatelessWidget {
   const PurchaseItemWidget({
     super.key,
@@ -82,7 +84,7 @@ class PurchaseItemWidget extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      '₹${purchaseItem.price}',
+                      '$rupeeIcon ${purchaseItem.price}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,

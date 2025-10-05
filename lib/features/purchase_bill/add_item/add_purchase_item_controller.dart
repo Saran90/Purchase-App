@@ -14,6 +14,7 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../../../api/error_response.dart';
 import '../../../data/error/failures.dart';
 import '../../../utils/messages.dart';
+import '../widgets/product_selection_widget.dart';
 
 class AddPurchaseItemController extends GetxController {
   final barcodeController = TextEditingController();
@@ -29,6 +30,7 @@ class AddPurchaseItemController extends GetxController {
   final PurchaseApi purchaseApi = Get.find();
 
   Rx<ProductItem?> selectedProductItem = Rx<ProductItem?>(null);
+  RxList<ProductItem?> selectedProductItems = RxList<ProductItem?>();
   RxList<ProductItem> productItems = RxList([]);
   RxBool isLoading = false.obs;
   RxBool showNewBarcodeView = false.obs;
@@ -43,6 +45,8 @@ class AddPurchaseItemController extends GetxController {
   Rx<double?> selectedTaxSlab = Rx<double?>(null);
   RxBool isEdit = RxBool(false);
   Rx<PurchaseItem?> purchaseItem = Rx<PurchaseItem?>(null);
+  RxnDouble selectedMrp = RxnDouble();
+  RxList<double> productMrps = RxList([]);
 
   @override
   void onInit() {
@@ -116,6 +120,7 @@ class AddPurchaseItemController extends GetxController {
                     mrp: e.mrp?.toDouble() ?? 0,
                     barCode: e.barCode ?? '',
                     packing: e.packing ?? '',
+                    availableMrps: [],
                   ),
                 )
                 .toList() ??
@@ -129,13 +134,30 @@ class AddPurchaseItemController extends GetxController {
     return productItems;
   }
 
+  Future<List<double>> getProductMrps(String pattern) async {
+    return selectedProductItem.value?.availableMrps ?? [];
+  }
+
+  void onMrpSelected(double value) {
+    selectedMrp.value = value;
+    mrpController.text = '$value';
+  }
+
   void onProductItemSelected(ProductItem item) {
-    selectedProductItem.value = item;
-    packagingController.text = item.packing;
-    mrpController.text = item.mrp.toString();
-    barcodeController.text = item.barCode;
-    purchaseId.value = item.id;
-    quantityFocusNode.requestFocus();
+    _getProductById(item);
+  }
+
+  void populateProductDetails() {
+    if (selectedProductItem.value != null) {
+      nameController.text = selectedProductItem.value!.name;
+      packagingController.text = selectedProductItem.value!.packing;
+      if(selectedProductItem.value!.availableMrps.length==1) {
+        mrpController.text = selectedProductItem.value!.mrp.toString();
+      }
+      barcodeController.text = selectedProductItem.value!.barCode;
+      purchaseId.value = selectedProductItem.value!.id;
+      quantityFocusNode.requestFocus();
+    }
   }
 
   Future<void> onBarcodeClicked(BuildContext context, bool newBarcode) async {
@@ -163,18 +185,18 @@ class AddPurchaseItemController extends GetxController {
       } else {
         barcodeController.text = res;
         if (res.isNotEmpty) {
-          getProductByBarcode(res);
+          getAllProductsByBarcode(res);
         }
       }
     }
   }
 
   void onSaved() {
-    if(!isImported.value) {
+    if (!isImported.value) {
       if (nameController.text.isNotEmpty) {
         if (mrpController.text.isNotEmpty) {
           if ((quantityController.text.isEmpty ||
-              quantityController.text == '0') &&
+                  quantityController.text == '0') &&
               (freeQuantityController.text.isEmpty ||
                   freeQuantityController.text == '0')) {
             showToast(
@@ -216,7 +238,7 @@ class AddPurchaseItemController extends GetxController {
                   rowNumber: rowNumber.value,
                   hsnCode: hsnCodeController.text,
                   taxPercentage:
-                  double.tryParse(taxPercentageController.text) ?? 0,
+                      double.tryParse(taxPercentageController.text) ?? 0,
                   isNew: isNewProduct.value,
                 ),
               );
@@ -262,11 +284,70 @@ class AddPurchaseItemController extends GetxController {
             mrp: r.mrp?.toDouble() ?? 0,
             packing: r.packing ?? '',
             barCode: r.barCode ?? '',
+            availableMrps:
+                r.batchesList?.map((e) => e.mrp?.toDouble() ?? 0).toList() ??
+                [],
           );
           nameController.text = selectedProductItem.value?.name ?? '';
           packagingController.text = selectedProductItem.value?.packing ?? '';
           mrpController.text = selectedProductItem.value?.mrp.toString() ?? '';
           quantityFocusNode.requestFocus();
+        } else {}
+        isLoading.value = false;
+      },
+    );
+  }
+
+  Future<void> getAllProductsByBarcode(String res) async {
+    isLoading.value = false;
+    var result = await purchaseApi.getAllProductsByBarcode(res);
+    result.fold(
+      (l) {
+        if (l is APIFailure) {
+          ErrorResponse? errorResponse = l.error;
+          showToast(message: errorResponse?.message ?? apiFailureMessage);
+        } else if (l is ServerFailure) {
+          showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
+        } else if (l is NetworkFailure) {
+          showToast(message: networkFailureMessage);
+        } else if (l is NoDataFailure) {
+        } else {
+          showToast(message: unknownFailureMessage);
+        }
+        isLoading.value = false;
+      },
+      (r) {
+        if (r != null) {
+          selectedProductItems.value =
+              r.dataList
+                  ?.map(
+                    (e) => ProductItem(
+                      id: e.productId?.toInt() ?? 0,
+                      name: e.productName ?? '',
+                      mrp: e.mrp?.toDouble() ?? 0,
+                      packing: e.packing ?? '',
+                      barCode: e.barCode ?? '',
+                      availableMrps:
+                          e.batchesList
+                              ?.map((e) => e.mrp?.toDouble() ?? 0)
+                              .toList() ??
+                          [],
+                    ),
+                  )
+                  .toList() ??
+              [];
+          if (selectedProductItems.length == 1) {
+            var item = selectedProductItems.first;
+            selectedProductItem.value = item;
+            nameController.text = selectedProductItem.value?.name ?? '';
+            packagingController.text = selectedProductItem.value?.packing ?? '';
+            mrpController.text =
+                selectedProductItem.value?.mrp.toString() ?? '';
+            quantityFocusNode.requestFocus();
+          } else {
+            showProductSelectionWidget();
+          }
         } else {}
         isLoading.value = false;
       },
@@ -322,5 +403,63 @@ class AddPurchaseItemController extends GetxController {
   void onRemoveNewBarcodeClicked() {
     showNewBarcodeView.value = false;
     newBarcodeController.text = '';
+  }
+
+  void showProductSelectionWidget() {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      context: Get.context!,
+      isScrollControlled: true,
+      builder:
+          (context) => ProductSelectionWidget(
+            products: selectedProductItems,
+            onProductSelected: onProductVariantSelected,
+          ),
+    );
+  }
+
+  Future<void> _getProductById(ProductItem item) async {
+    isLoading.value = false;
+    var result = await purchaseApi.getProductsById(item.id);
+    result.fold(
+      (l) {
+        if (l is APIFailure) {
+          ErrorResponse? errorResponse = l.error;
+          showToast(message: errorResponse?.message ?? apiFailureMessage);
+        } else if (l is ServerFailure) {
+          showToast(message: l.message ?? serverFailureMessage);
+        } else if (l is AuthFailure) {
+        } else if (l is NetworkFailure) {
+          showToast(message: networkFailureMessage);
+        } else if (l is NoDataFailure) {
+        } else {
+          showToast(message: unknownFailureMessage);
+        }
+        isLoading.value = false;
+      },
+      (r) {
+        if (r != null) {
+          selectedProductItem.value = ProductItem(
+            id: r.productId?.toInt() ?? 0,
+            name: r.productName ?? '',
+            mrp: r.mrp?.toDouble() ?? 0,
+            packing: r.packing ?? '',
+            barCode: r.barCode ?? '',
+            availableMrps:
+                r.batchesList?.map((e) => e.mrp?.toDouble() ?? 0).toList() ??
+                [],
+          );
+          productMrps.value = selectedProductItem.value?.availableMrps ?? [];
+          populateProductDetails();
+        } else {}
+        isLoading.value = false;
+      },
+    );
+  }
+
+  void onProductVariantSelected(ProductItem item) {
+    Get.back();
+    selectedProductItem.value = item;
+    populateProductDetails();
   }
 }

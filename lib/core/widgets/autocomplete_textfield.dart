@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class AutocompleteTextField<T> extends StatelessWidget {
@@ -9,6 +10,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
     required this.onSelected,
     required this.getSuggestions,
     this.selectedValue,
+    this.formatters,
     this.label,
     this.focusNode,
     this.textColor = Colors.white,
@@ -22,6 +24,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
   final String? label;
   final Function(T) onSelected;
   final Function(String) getSuggestions;
+  final List<TextInputFormatter>? formatters;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +50,7 @@ class AutocompleteTextField<T> extends StatelessWidget {
                 autofocus: true,
                 style: TextStyle(color: textColor),
                 cursorColor: textColor,
+                inputFormatters: formatters,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   labelStyle: TextStyle(color: textColor),

@@ -19,6 +19,7 @@ class AddPurchaseItemScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Obx(
         () => Container(
           decoration: BoxDecoration(
@@ -141,266 +142,297 @@ class AddPurchaseItemScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        if(_controller.showNewBarcodeView.value) Obx(
-                              () => Column(
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap:
-                                              () => _controller.onBarcodeClicked(
-                                            context,
-                                            true,
-                                          ),
-                                          child: IconTextField(
-                                            controller:
-                                            _controller.newBarcodeController,
-                                            hint: 'Enter barcode',
-                                            textInputType: TextInputType.text,
-                                            whiteBackground: false,
-                                            label: 'New Barcode',
-                                            isEnabled: false,
-                                            suffixIcon: 'assets/icons/ic_barcode.png',
-                                          ),
+                        if (_controller.showNewBarcodeView.value)
+                          Obx(
+                            () => Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap:
+                                            () => _controller.onBarcodeClicked(
+                                              context,
+                                              true,
+                                            ),
+                                        child: IconTextField(
+                                          controller:
+                                              _controller.newBarcodeController,
+                                          hint: 'Enter barcode',
+                                          textInputType: TextInputType.text,
+                                          whiteBackground: false,
+                                          label: 'New Barcode',
+                                          isEnabled: false,
+                                          suffixIcon:
+                                              'assets/icons/ic_barcode.png',
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(width: 30),
-                                          InkWell(
-                                            onTap:
-                                            _controller
-                                                .onRemoveNewBarcodeClicked,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 20,
-                                              ),
-                                              child: Text(
-                                                '-',
-                                                style: TextStyle(
-                                                    fontSize: 30,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white
-                                                ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 30),
+                                        InkWell(
+                                          onTap:
+                                              _controller
+                                                  .onRemoveNewBarcodeClicked,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 20,
+                                            ),
+                                            child: Text(
+                                              '-',
+                                              style: TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(width: 10),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                ],
-                              ),
-                        ),
-                       Obx(() => Stack(
-                         children: [
-                           _controller.isNewProduct.value
-                               ? IconTextField(
-                             controller: _controller.nameController,
-                             hint: 'Enter name',
-                             textInputType: TextInputType.text,
-                             whiteBackground: false,
-                             label: 'Name',
-                           )
-                               : Obx(
-                                 () => AutocompleteTextField<ProductItem>(
-                               controller: _controller.nameController,
-                               getSuggestions:
-                               _controller.getProductSuggestions,
-                               onSelected: _controller.onProductItemSelected,
-                               suggestions: _controller.productItems,
-                               selectedValue:
-                               _controller.selectedProductItem.value,
-                               label: 'Name',
-                               focusNode: _controller.nameFocusNode,
-                             ),
-                           ),
-                           Visibility(
-                             visible: _controller.isImported.value,
-                             child: InkWell(
-                               onTap: () {},
-                               child: SizedBox(
-                                 width: Get.width,
-                                 height: 80,
-                               ),
-                             ),
-                           ),
-                         ],
-                       ),),
-                        const SizedBox(height: 20),
-                        Obx(() => Stack(
-                          children: [
-                            IconTextField(
-                              controller: _controller.packagingController,
-                              hint: 'Enter packing',
-                              textInputType: TextInputType.text,
-                              whiteBackground: false,
-                              label: 'Packing',
-                            ),
-                            Visibility(
-                              visible: _controller.isImported.value,
-                              child: InkWell(
-                                onTap: () {},
-                                child: SizedBox(
-                                  width: Get.width,
-                                  height: 80,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),),
-                        const SizedBox(height: 20),
-                        Obx(() => Stack(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: IconTextField(
-                                    focusNode: _controller.quantityFocusNode,
-                                    controller: _controller.quantityController,
-                                    hint: 'Enter quantity',
-                                    textInputType: TextInputType.numberWithOptions(
-                                      signed: false,
-                                      decimal: true,
+                                        ),
+                                        const SizedBox(width: 10),
+                                      ],
                                     ),
-                                    whiteBackground: false,
-                                    label: 'Quantity',
-                                    formatters: [
-                                      FilteringTextInputFormatter.allow(
-                                        RegExp(r'(^\-?\d*\.?\d*)'),
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: IconTextField(
-                                    controller: _controller.freeQuantityController,
-                                    hint: 'Enter free quantity',
-                                    textInputType: TextInputType.numberWithOptions(
-                                      signed: false,
-                                      decimal: true,
-                                    ),
-                                    whiteBackground: false,
-                                    label: 'Free Quantity',
-                                    formatters: [
-                                      FilteringTextInputFormatter.allow(
-                                        RegExp(r'(^\-?\d*\.?\d*)'),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                const SizedBox(height: 20),
                               ],
                             ),
-                            Visibility(
-                              visible: _controller.isImported.value,
-                              child: InkWell(
-                                onTap: () {},
-                                child: SizedBox(
-                                  width: Get.width,
-                                  height: 80,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),),
-                        const SizedBox(height: 20),
-                        Obx(() => Stack(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: IconTextField(
-                                    controller: _controller.mrpController,
-                                    hint: 'Enter mrp',
-                                    textInputType: TextInputType.numberWithOptions(
-                                      signed: false,
-                                      decimal: true,
-                                    ),
-                                    whiteBackground: false,
-                                    label: 'MRP',
-                                    formatters: [
-                                      FilteringTextInputFormatter.allow(
-                                        RegExp(r'(^\-?\d*\.?\d*)'),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Obx(
-                                        () =>
-                                    _controller.isNewProduct.value
-                                        ? AppDropDown(
-                                      items: _controller.taxSlabs,
-                                      hint: 'Select',
-                                      label: 'Tax Percentage',
-                                      selectedValue:
-                                      _controller
-                                          .selectedTaxSlab
-                                          .value ??
-                                          0,
-                                      onValueSelected:
-                                      _controller.onTaxSlabSelected,
-                                    )
-                                        : SizedBox(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Visibility(
-                              visible: _controller.isImported.value,
-                              child: InkWell(
-                                onTap: () {},
-                                child: SizedBox(
-                                  width: Get.width,
-                                  height: 80,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),),
-                        Obx(() => Stack(
-                          children: [
-                            Visibility(
-                              visible: _controller.isNewProduct.value,
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20),
-                                  IconTextField(
-                                    controller: _controller.hsnCodeController,
-                                    hint: 'Enter hsn code',
+                          ),
+                        Obx(
+                          () => Stack(
+                            children: [
+                              _controller.isNewProduct.value
+                                  ? IconTextField(
+                                    controller: _controller.nameController,
+                                    hint: 'Enter name',
                                     textInputType: TextInputType.text,
                                     whiteBackground: false,
-                                    label: 'HSN Code',
+                                    label: 'Name',
+                                  )
+                                  : Obx(
+                                    () => AutocompleteTextField<ProductItem>(
+                                      controller: _controller.nameController,
+                                      getSuggestions:
+                                          _controller.getProductSuggestions,
+                                      onSelected:
+                                          _controller.onProductItemSelected,
+                                      suggestions: _controller.productItems,
+                                      selectedValue:
+                                          _controller.selectedProductItem.value,
+                                      label: 'Name',
+                                      focusNode: _controller.nameFocusNode,
+                                    ),
+                                  ),
+                              Visibility(
+                                visible: _controller.isImported.value,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: SizedBox(width: Get.width, height: 80),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Obx(
+                          () => Stack(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: IconTextField(
+                                      controller: _controller.packagingController,
+                                      hint: 'Enter packing',
+                                      textInputType: TextInputType.text,
+                                      whiteBackground: false,
+                                      label: 'Packing',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10,),
+                                  (_controller.selectedProductItem.value
+                                      ?.hasMutipleMrps() ??
+                                      false)
+                                      ? Expanded(
+                                    child: Obx(
+                                          () => AutocompleteTextField<double>(
+                                        controller:
+                                        _controller.mrpController,
+                                        getSuggestions:
+                                        _controller.getProductMrps,
+                                        onSelected:
+                                        _controller.onMrpSelected,
+                                        suggestions:
+                                        _controller.productMrps,
+                                        selectedValue:
+                                        _controller.selectedMrp.value,
+                                        label: 'MRP',
+                                        formatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'(^\-?\d*\.?\d*)'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                      : Expanded(
+                                    child: IconTextField(
+                                      controller: _controller.mrpController,
+                                      hint: 'Enter mrp',
+                                      textInputType:
+                                      TextInputType.numberWithOptions(
+                                        signed: false,
+                                        decimal: true,
+                                      ),
+                                      whiteBackground: false,
+                                      label: 'MRP',
+                                      formatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'(^\-?\d*\.?\d*)'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Obx(
+                          () => Stack(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Obx(
+                                      () =>
+                                          _controller.isNewProduct.value
+                                              ? AppDropDown(
+                                                items: _controller.taxSlabs,
+                                                hint: 'Select',
+                                                label: 'Tax Percentage',
+                                                selectedValue:
+                                                    _controller
+                                                        .selectedTaxSlab
+                                                        .value ??
+                                                    0,
+                                                onValueSelected:
+                                                    _controller
+                                                        .onTaxSlabSelected,
+                                              )
+                                              : SizedBox(),
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Visibility(
-                              visible: _controller.isImported.value,
-                              child: InkWell(
-                                onTap: () {},
-                                child: SizedBox(
-                                  width: Get.width,
-                                  height: 80,
+                              Visibility(
+                                visible: _controller.isImported.value,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: SizedBox(width: Get.width, height: 80),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),),
-                        const SizedBox(height: 40),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Obx(
+                          () => Stack(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: IconTextField(
+                                      focusNode: _controller.quantityFocusNode,
+                                      controller:
+                                          _controller.quantityController,
+                                      hint: 'Enter quantity',
+                                      textInputType:
+                                          TextInputType.numberWithOptions(
+                                            signed: false,
+                                            decimal: true,
+                                          ),
+                                      whiteBackground: false,
+                                      label: 'Quantity',
+                                      formatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'(^\-?\d*\.?\d*)'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: IconTextField(
+                                      controller:
+                                          _controller.freeQuantityController,
+                                      hint: 'Enter free quantity',
+                                      textInputType:
+                                          TextInputType.numberWithOptions(
+                                            signed: false,
+                                            decimal: true,
+                                          ),
+                                      whiteBackground: false,
+                                      label: 'Free Quantity',
+                                      formatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'(^\-?\d*\.?\d*)'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible: _controller.isImported.value,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: SizedBox(width: Get.width, height: 80),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Obx(
+                          () => Stack(
+                            children: [
+                              Visibility(
+                                visible: _controller.isNewProduct.value,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 20),
+                                    IconTextField(
+                                      controller: _controller.hsnCodeController,
+                                      hint: 'Enter hsn code',
+                                      textInputType: TextInputType.text,
+                                      whiteBackground: false,
+                                      label: 'HSN Code',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Visibility(
+                                visible: _controller.isImported.value,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: SizedBox(width: Get.width, height: 80),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 60),
                         Obx(
                           () => Visibility(
                             visible: !_controller.isImported.value,
                             child: AppButton(
-                              label: _controller.isEdit.value ? 'Update' : 'Add',
+                              label:
+                                  _controller.isEdit.value ? 'Update' : 'Add',
                               onSubmit: _controller.onSaved,
                               startColor:
                                   _controller.isNewProduct.value

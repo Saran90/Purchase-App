@@ -1,4 +1,5 @@
 class PurchaseItem {
+  int? tempId;
   int id;
   int rowNumber;
   String name;
@@ -24,6 +25,7 @@ class PurchaseItem {
     required this.quantity,
     required this.hsnCode,
     required this.taxPercentage,
-    this.isNew = false
+    this.isNew = false,
+    this.tempId
   });
 }

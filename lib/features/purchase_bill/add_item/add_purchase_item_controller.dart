@@ -38,7 +38,9 @@ class AddPurchaseItemController extends GetxController {
   RxBool showAddNewBarcodeView = false.obs;
   RxBool isImported = false.obs;
   RxInt purchaseId = 0.obs;
-  RxInt rowNumber = 0.obs;
+  RxnInt tempId = RxnInt();
+  RxInt rowNumber = 1.obs;
+  RxInt itemCount = 0.obs;
   late FocusNode quantityFocusNode;
   late FocusNode nameFocusNode;
   RxBool isNewProduct = false.obs;
@@ -63,8 +65,14 @@ class AddPurchaseItemController extends GetxController {
     if (value[2] != null) {
       isImported.value = value[2] as bool;
     }
+    if (value[3] != null) {
+      itemCount.value = value[3] as int;
+      rowNumber.value = itemCount.value + 1;
+      rowController.text = rowNumber.string;
+    }
     PurchaseItem? item = value[0] as PurchaseItem?;
     if (item != null) {
+      tempId.value = item.tempId;
       purchaseItem.value = item;
       isEdit.value = true;
       nameController.text = item.name;
@@ -112,31 +120,34 @@ class AddPurchaseItemController extends GetxController {
       return [];
     }
     var result = await purchaseApi.getProducts(name: pattern);
-    result.fold((l) {
-      productItems.value = [];
-      return [];
-    }, (r) {
-      if (r != null) {
-        productItems.value =
-            r.dataList
-                ?.map(
-                  (e) => ProductItem(
-                    id: e.productId?.toInt() ?? 0,
-                    name: e.productName ?? '',
-                    mrp: e.mrp?.toDouble() ?? 0,
-                    barCode: e.barCode ?? '',
-                    packing: e.packing ?? '',
-                    availableMrps: [],
-                  ),
-                )
-                .toList() ??
-            [];
-        return productItems;
-      } else {
+    result.fold(
+      (l) {
         productItems.value = [];
         return [];
-      }
-    });
+      },
+      (r) {
+        if (r != null) {
+          productItems.value =
+              r.dataList
+                  ?.map(
+                    (e) => ProductItem(
+                      id: e.productId?.toInt() ?? 0,
+                      name: e.productName ?? '',
+                      mrp: e.mrp?.toDouble() ?? 0,
+                      barCode: e.barCode ?? '',
+                      packing: e.packing ?? '',
+                      availableMrps: [],
+                    ),
+                  )
+                  .toList() ??
+              [];
+          return productItems;
+        } else {
+          productItems.value = [];
+          return [];
+        }
+      },
+    );
     return productItems;
   }
 
@@ -216,6 +227,8 @@ class AddPurchaseItemController extends GetxController {
               } else {
                 Get.back(
                   result: PurchaseItem(
+                    tempId:
+                        tempId.value ?? DateTime.now().millisecondsSinceEpoch,
                     id: purchaseId.value,
                     name: nameController.text,
                     packaging: packagingController.text,
@@ -234,6 +247,7 @@ class AddPurchaseItemController extends GetxController {
             } else {
               Get.back(
                 result: PurchaseItem(
+                  tempId: tempId.value ?? DateTime.now().millisecondsSinceEpoch,
                   id: purchaseId.value,
                   name: nameController.text,
                   packaging: packagingController.text,

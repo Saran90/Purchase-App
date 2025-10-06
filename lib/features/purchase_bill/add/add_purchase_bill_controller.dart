@@ -112,7 +112,7 @@ class AddPurchaseBillController extends GetxController {
       var item =
           await Get.toNamed(
                 addPurchaseItemRoute,
-                arguments: [null, false, isImported.value],
+                arguments: [null, false, isImported.value, items.length],
               )
               as PurchaseItem?;
       onItemAdded(item);
@@ -125,7 +125,7 @@ class AddPurchaseBillController extends GetxController {
       var item =
           await Get.toNamed(
                 addPurchaseItemRoute,
-                arguments: [null, true, isImported.value],
+                arguments: [null, true, isImported.value, items.length],
               )
               as PurchaseItem?;
       onItemAdded(item);
@@ -161,6 +161,11 @@ class AddPurchaseBillController extends GetxController {
                 }
               }
               items.refresh();
+            },
+            () {
+              Get.back();
+              items.add(item);
+              update();
             },
             () {
               Get.back();
@@ -352,12 +357,16 @@ class AddPurchaseBillController extends GetxController {
         item,
         () {
           Get.back();
-          items.removeWhere(
-            (element) =>
-                (element.id == item.id) &&
-                (element.price == item.price) &&
-                (element.name == item.name),
-          );
+          if (item.tempId == null) {
+            items.removeWhere(
+              (element) =>
+                  (element.id == item.id) &&
+                  (element.price == item.price) &&
+                  (element.name == item.name),
+            );
+          } else {
+            items.removeWhere((element) => (element.tempId == item.tempId));
+          }
         },
         () {
           Get.back();
@@ -383,6 +392,7 @@ class AddPurchaseBillController extends GetxController {
   void showDuplicateProductDialog(
     PurchaseItem item,
     Function() onOkClicked,
+    Function() onNoClicked,
     Function() onCancelClicked,
   ) {
     showDialog(
@@ -391,13 +401,19 @@ class AddPurchaseBillController extends GetxController {
         return AlertDialog(
           title: Text("Duplicate Product"),
           content: Text(
-            "${item.name} already added. Do you want to update the quantity?",
+            "${item.name} was already added. Do you want to merge the quantity?",
           ),
           actions: [
             TextButton(
               child: Text("Cancel"),
               onPressed: () {
                 onCancelClicked();
+              },
+            ),
+            TextButton(
+              child: Text("No"),
+              onPressed: () {
+                onNoClicked();
               },
             ),
             TextButton(
@@ -478,7 +494,7 @@ class AddPurchaseBillController extends GetxController {
     var item =
         await Get.toNamed(
               addPurchaseItemRoute,
-              arguments: [purchaseItem, false, isImported.value],
+              arguments: [purchaseItem, false, isImported.value, items.length],
             )
             as PurchaseItem?;
     onItemUpdated(item);

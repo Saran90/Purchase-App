@@ -112,7 +112,10 @@ class AddPurchaseItemController extends GetxController {
       return [];
     }
     var result = await purchaseApi.getProducts(name: pattern);
-    result.fold((l) {}, (r) {
+    result.fold((l) {
+      productItems.value = [];
+      return [];
+    }, (r) {
       if (r != null) {
         productItems.value =
             r.dataList

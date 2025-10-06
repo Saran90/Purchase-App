@@ -137,24 +137,15 @@ class AddPurchaseBillController extends GetxController {
     if (item != null) {
       if (_isAlreadyAdded(item)) {
         if (_hasDifferentMrp(item)) {
-          showDuplicatePriceProductDialog(
-            item,
-            () {
-              Get.back();
-              items.add(item);
-              update();
-            },
-            () {
-              Get.back();
-            },
-          );
+          items.add(item);
+          update();
         } else {
           showDuplicateProductDialog(
             item,
             () {
               Get.back();
               for (int i = 0; i < items.length; i++) {
-                if (items[i].id == item.id) {
+                if (items[i].id == item.id && items[i].price == item.price) {
                   items[i].quantity += item.quantity;
                   items[i].freeQuantity += item.freeQuantity;
                   break;
@@ -384,9 +375,15 @@ class AddPurchaseBillController extends GetxController {
   }
 
   bool _hasDifferentMrp(PurchaseItem item) {
-    return items.any(
-      (element) => (element.id == item.id) && (element.price != item.price),
-    );
+    bool hasSameMrp = false;
+    for (int i = 0; i < items.length; i++) {
+      if (items[i].id == item.id &&
+          items[i].name == item.name &&
+          items[i].price == item.price) {
+        hasSameMrp = true;
+      }
+    }
+    return !hasSameMrp;
   }
 
   void showDuplicateProductDialog(
@@ -401,7 +398,7 @@ class AddPurchaseBillController extends GetxController {
         return AlertDialog(
           title: Text("Duplicate Product"),
           content: Text(
-            "${item.name} was already added. Do you want to merge the quantity?",
+            "Merge quantity?",
           ),
           actions: [
             TextButton(

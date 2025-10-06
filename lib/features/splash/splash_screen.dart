@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Center(
               child: Text(
-                'Purchase App',
+                'Easy Purchase',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,

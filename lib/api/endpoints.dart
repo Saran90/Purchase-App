@@ -1,4 +1,4 @@
-const String apiBaseUrl = 'https://purchase.trademate.co.in';
+const String apiBaseUrl = 'https://purchase.cochindistributors.in';
 const String loginUrl = '/api/auth/login';
 const String addPurchaseUrl = '/api/purchase/save';
 const String deletePurchaseUrl = '/api/purchase/Delete';
